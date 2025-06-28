@@ -5,13 +5,13 @@ const Navbar = () => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
   const navItems = [
-    { label: "Home", to: "/" },
-    { label: "About", to: "/about" },
-    { label: "Menu", to: "/menu" },
-    { label: "Chef", to: "/chef" },
-    { label: "Gallery", to: "/gallery" },
-    { label: "Reservation", to: "/reservation" },
-    { label: "Contact", to: "/contact" },
+    { label: "Home", to: "/home" },
+    { label: "About", to: "/home" },
+    { label: "Menu", to: "/home" },
+    { label: "Chef", to: "/home" },
+    { label: "Gallery", to: "/home" },
+    { label: "Reservation", to: "/home" },
+    { label: "Contact", to: "/home" },
   ];
 
   return (

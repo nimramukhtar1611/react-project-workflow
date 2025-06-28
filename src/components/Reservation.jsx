@@ -1,6 +1,6 @@
 import React from "react";
 
-const ReservationForm = () => {
+const Reservation= () => {
   const times = [
     "12:00 PM", "12:30 PM", "1:00 PM", "1:30 PM", "2:00 PM",
     "2:30 PM", "3:00 PM", "3:30 PM", "4:00 PM", "4:30 PM",
@@ -315,4 +315,4 @@ const ReservationForm = () => {
   );
 };
 
-export default ReservationForm;
+export default Reservation;
