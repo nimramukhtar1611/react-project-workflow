@@ -8,12 +8,10 @@ import Moment from './components/Moment'
 import Offer from './components/Offer';
 import Visit from './components/Visit';
 import Reservation from './components/Reservation'
-
-
 const Home = () => {
  return (
   <>
-    <Story/>
+  <div style={{ overflow:"hidden"}}>   <Story/>
    <Menu/>
    <Chef/>
    <Moment/>
@@ -21,11 +19,8 @@ const Home = () => {
       <Visit/>
    <Offer/>
    <Guests/>
-   <Reservation/>
-
-
-
-
+   <Reservation/></div>
+   
 
   </>
 );

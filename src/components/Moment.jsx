@@ -1,4 +1,5 @@
 import React from 'react'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Moment = () => {
   const boxShadow = "0 1px 6px 0 rgba(60,72,88,.04)";
