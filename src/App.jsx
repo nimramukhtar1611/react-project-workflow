@@ -13,7 +13,7 @@ function App() {
     <div style={{ fontFamily: "'Poppins', sans-serif", backgroundColor: "#f7f7f7" }}>
       <Navbar />
       <Switch>
-        <Route exact path="/home" component={Home} />
+        <Route exact path="/" component={Home} />
 
       </Switch>
     </div>
