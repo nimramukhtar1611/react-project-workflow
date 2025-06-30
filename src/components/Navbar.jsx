@@ -15,11 +15,8 @@ const Navbar = () => {
   ];
 
   return (
-    <>
-      <nav
-        className="navbar navbar-expand-lg navbar-light px-5 py-3"
-        style={{ backgroundColor: "#dcdcdc" }}
-      >
+    <nav className="navbar navbar-expand-lg navbar-light px-5 py-3" style={{ backgroundColor: "#dcdcdc" }}>
+      <div className="container-fluid px-0 d-flex justify-content-between align-items-center">
         <a
           className="navbar-brand fw-bold text-warning"
           href="#"
@@ -88,8 +85,8 @@ const Navbar = () => {
             Reserve Now
           </button>
         </div>
-      </nav>
-    </>
+      </div>
+    </nav>
   );
 };
 
