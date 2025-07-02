@@ -49,7 +49,7 @@ const Visit = () => {
   return (
     <section className="py-4">
       <div className="container">
-        <div className="row g-0 shadow-sm rounded" style={{ boxShadow, borderRadius, overflow: "hidden" }}>
+        <div className="row g-0 shadow-sm rounded overflow-hidden" style={{ boxShadow, borderRadius }}>
           {/* Image Section */}
           <div className="col-12 col-md-5" style={{
             backgroundImage: "url('https://imgs.search.brave.com/62Zyt53HzZEovBq--SyCNmZEOxR-LWHG0eF0-Urpujw/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/aG90ZWxkZWwuY29t/L3dwLWNvbnRlbnQv/dXBsb2Fkcy8yMDIw/LzEwL2hvdGVsLWRl/bC1jb3JvbmFkby1z/dW4tZGVjay1jb3Vw/bGVzLWZyaWVuZHMt/c3Vuc2V0LWZpcmUt/d2VjcmVhdGUtMjAy/My0xNjAweDEwMDAt/MS5qcGc')",
@@ -79,6 +79,24 @@ const Visit = () => {
           </div>
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .container {
+            padding: 0 1rem;
+          }
+          .row {
+            flex-direction: column !important;
+          }
+          .col-12 {
+            width: 100%;
+          }
+          button {
+            width: 100%;
+            text-align: center;
+          }
+        }
+      `}</style>
     </section>
   );
 };

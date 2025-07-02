@@ -112,28 +112,30 @@ const statLabel = {
     </div>
   ))}
 </div>
-      {/* Guest Stats */}
-      <div className="row g-4 mt-4">
-        {[
-          { num: "4.9", label: "Average Rating" },
-          { num: "97%", label: "Would Recommend" },
-          { num: "5000+", label: "Happy Customers" },
-          { num: "12", label: "Culinary Awards" },
-        ].map((stat, i) => (
-          <div className="col-6 col-md-3" key={i}>
-            <div style={{
+     <div className="row g-4 mt-4 justify-content-center text-center">
+      {[
+        { num: "4.9", label: "Average Rating" },
+        { num: "97%", label: "Would Recommend" },
+        { num: "5000+", label: "Happy Customers" },
+        { num: "12", label: "Culinary Awards" },
+      ].map((stat, i) => (
+        <div className="col-12 col-sm-6 col-md-3" key={i}>
+          <div
+            style={{
               background: "#F6F6F6",
               borderRadius: 14,
               padding: "18px 0",
               textAlign: "center",
               boxShadow,
-            }}>
-              <div style={statNumber}>{stat.num}</div>
-              <div style={statLabel}>{stat.label}</div>
-            </div>
+              height: "100%",
+            }}
+          >
+            <div style={statNumber}>{stat.num}</div>
+            <div style={statLabel}>{stat.label}</div>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
+    </div>
     </div>
   </div>
   )

@@ -1,90 +1,79 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom/cjs/react-router-dom.min'
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const Navbar = () => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [categories, setCategories] = useState([]);
 
   const navItems = [
-    { label: "Home", to: "/" },
-    { label: "About", to: "/" },
-    { label: "Menu", to: "/" },
-    { label: "Chef", to: "/" },
-    { label: "Gallery", to: "/" },
-    { label: "Reservation", to: "/" },
-    { label: "Contact", to: "/" },
+    { label: 'Home', to: '/' },
+    { label: 'About', to: '/about' },
+    { label: 'Contact', to: '/contact' },
   ];
 
-  return (
-    <nav className="navbar navbar-expand-lg navbar-light px-5 py-3" style={{ backgroundColor: "#dcdcdc" }}>
-      <div className="container-fluid px-0 d-flex justify-content-between align-items-center">
-        <a
-          className="navbar-brand fw-bold text-warning"
-          href="#"
-          style={{
-            color: "#E1AD01",
-            fontWeight: "bold",
-            fontFamily: "'Playfair Display', serif",
-          }}
-        >
-          AURUM
-        </a>
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div
-          className="collapse navbar-collapse justify-content-between"
-          id="navbarNav"
-        >
-          <ul className="navbar-nav mx-auto">
-            {navItems.map((item, index) => (
-              <li className="nav-item" key={index}>
-                <Link
-                  className="nav-link fw-bold"
-                  to={item.to}
-                  onMouseOver={() => setHoveredIndex(index)}
-                  onMouseOut={() => setHoveredIndex(null)}
-                  style={{
-                    color: hoveredIndex === index ? "#E1AD01" : "#fff",
-                    fontWeight: "600",
-                    position: "relative",
-                    transition: "all 0.3s ease-in-out",
-                    borderBottom: hoveredIndex === index ? "2px solid #E1AD01" : "2px solid transparent",
-                    padding: "0.5rem 1rem",
-                  }}
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
+  useEffect(() => {
+    axios.get('http://localhost:8000/api/dishes').then((res) => {
+      setCategories(res.data);
+    });
+  }, []);
 
-          <button
-            className="btn btn-warning px-4 py-2"
-            style={{
-              background: "#E1AD01",
-              borderRadius: "10px",
-              border: "none",
-              fontWeight: "600",
-              color: "#fff",
-              transition: "all 0.3s ease-in-out",
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.background = "#c49802";
-              e.currentTarget.style.transform = "scale(1.05)";
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.background = "#E1AD01";
-              e.currentTarget.style.transform = "scale(1)";
-            }}
-          >
-            Reserve Now
-          </button>
-        </div>
+  return (
+    <nav className="navbar navbar-expand-lg navbar-light px-lg-5 px-2 py-3" style={{ backgroundColor: '#dcdcdc' }}>
+      <Link className="navbar-brand fw-bold text-warning" to="/" style={{ color: '#E1AD01', fontFamily: "'Playfair Display', serif" }}>
+        AURUM
+      </Link>
+      <span className="navbar-toggler navbar-toggler-icon d-lg-none" data-bs-toggle="collapse" data-bs-target="#navbarNav"></span>
+
+      <div className="collapse navbar-collapse justify-content-between" id="navbarNav">
+        <ul className="navbar-nav mx-auto">
+          {navItems.map((item, index) => (
+            <li className="nav-item" key={index}>
+              <Link
+                className="nav-link fw-bold"
+                to={item.to}
+                onMouseOver={() => setHoveredIndex(index)}
+                onMouseOut={() => setHoveredIndex(null)}
+                style={{
+                  color: hoveredIndex === index ? '#E1AD01' : '#fff',
+                  borderBottom: hoveredIndex === index ? '2px solid #E1AD01' : '2px solid transparent',
+                  padding: '0.5rem 1rem',
+                  transition: 'all 0.3s ease-in-out'
+                }}
+              >
+                {item.label}
+              </Link>
+            </li>
+          ))}
+
+          {categories.map((cat, idx) => (
+            <li className="nav-item" key={`cat-${idx}`}>
+              <Link
+                className="nav-link fw-bold"
+                to={`/category/${cat.title}`}
+                style={{
+                  color: '#fff',
+                  borderBottom: '2px solid transparent',
+                  padding: '0.5rem 1rem',
+                  transition: 'all 0.3s ease-in-out'
+                }}
+                onMouseOver={(e) => (e.target.style.borderBottom = '2px solid #E1AD01')}
+                onMouseOut={(e) => (e.target.style.borderBottom = '2px solid transparent')}
+              >
+                {cat.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        <button
+          className="btn btn-warning px-4 py-2"
+          style={{ background: '#E1AD01', borderRadius: '10px', border: 'none', fontWeight: '600', color: '#fff' }}
+          onMouseOver={(e) => { e.currentTarget.style.background = '#c49802'; e.currentTarget.style.transform = 'scale(1.05)'; }}
+          onMouseOut={(e) => { e.currentTarget.style.background = '#E1AD01'; e.currentTarget.style.transform = 'scale(1)'; }}
+        >
+          Reserve Now
+        </button>
       </div>
     </nav>
   );

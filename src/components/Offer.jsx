@@ -190,8 +190,7 @@ useEffect(() => {
               </div>
             </div>
           </div>
-
-          {/* Offer 3 */}
+  {/* Offer 3 */}
           <div className="col-12 mt-4">
             <div style={{
               display: window.innerWidth < 768 ? "block" : "flex",
@@ -252,8 +251,8 @@ useEffect(() => {
       ...offerBtn,
       background: "#fff",
       color: "#B89A5B",
-      border: "1.5px solid #B89A5B",
-      width: isMobile ? "100%" : "auto"
+      border: "1.5px solid #E1AD02",
+      width: isMobile ? "auto" : "auto"
     }}
   >
     Inquire Now
@@ -262,7 +261,7 @@ useEffect(() => {
   <button
     style={{
       ...offerBtn,
-      width: isMobile ? "100%" : "auto"
+      width: isMobile ? "auto" : "auto"
     }}
   >
     Download Brochure
@@ -271,7 +270,7 @@ useEffect(() => {
 
               </div>
             </div>
-          </div>
+          </div> 
         </div>
       </div>
     </div>

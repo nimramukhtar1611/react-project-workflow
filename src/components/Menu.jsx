@@ -1,152 +1,201 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const Menu = () => {
-  const dishes = [
+  const hardDishes = [
     {
       name: "Lobster Ravioli",
-      desc:
-        "Handcrafted ravioli filled with tender lobster meat, served with a delicate scampi cream sauce and fresh herbs.",
+      desc: "Handcrafted ravioli filled with tender lobster meat, served with a delicate scampi cream sauce and fresh herbs.",
       price: "$38",
-      image:
-        "https://imgs.search.brave.com/gI1mAnSMGUPfbtMFu94mnRMuSctQwkZjPw7jaZ0l234/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly90aGVk/ZWZpbmVkZGlzaC5j/b20vd3AtY29udGVu/dC91cGxvYWRzLzIw/MjAvMTIvMjAyMC0x/Mi0xMC0wMy4zMi40/My01MDB4NTAwLmpw/Zw",
+      image: "https://imgs.search.brave.com/gI1mAnSMGUPfbtMFu94mnRMuSctQwkZjPw7jaZ0l234/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly90aGVk/ZWZpbmVkZGlzaC5j/b20vd3AtY29udGVu/dC91cGxvYWRzLzIw/MjAvMTIvMjAyMC0x/Mi0xMC0wMy4zMi40/My01MDB4NTAwLmpw/Zw",
     },
     {
       name: "Filet Mignon",
-      desc:
-        "Prime-aged beef tenderloin, truffle butter, wild mushroom ragout, and a port wine reduction sauce.",
+      desc: "Prime-aged beef tenderloin, truffle butter, wild mushroom ragout, and a port wine reduction sauce.",
       price: "$42",
-      image:
-        "https://imgs.search.brave.com/d381DEYK959Jsc0ElLtcZJ4JN5SdN5ihT65OUC7rXeo/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/d2lsbGNvb2tmb3Jz/bWlsZXMuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDIwLzAx/L0ZpbGV0LW1pZ25v/bi1pbi10aGUtcGFu/LWNsb3NldXAtc3F1/YXJlLmpwZw",
+      image: "https://imgs.search.brave.com/d381DEYK959Jsc0ElLtcZJ4JN5SdN5ihT65OUC7rXeo/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/d2lsbGNvb2tmb3Jz/bWlsZXMuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDIwLzAx/L0ZpbGV0LW1pZ25v/bi1pbi10aGUtcGFu/LWNsb3NldXAtc3F1/YXJlLmpwZw",
     },
     {
       name: "Truffle Pesto Linguine",
-      desc:
-        "Homemade linguine pasta with fresh basil pesto, shaved black truffles, and aged parmesan.",
+      desc: "Homemade linguine pasta with fresh basil pesto, shaved black truffles, and aged parmesan.",
       price: "$28",
-      image:
-        "https://imgs.search.brave.com/bxxdR7EWvdNTPRWYrOwbfTGGz6eNLTySO-_2JtEe4FQ/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9zaG9y/dGdpcmx0YWxsb3Jk/ZXIuY29tL3dwLWNv/bnRlbnQvdXBsb2Fk/cy8yMDIwLzA3L3Nw/aW5hY2gtYXJ0aWNo/b2tlLWJhc2lsLXBh/c3RhLXNxdWFyZS0y/LTUwMHg1MDAuanBn",
-    },
-    {
-      name: "Beef Steak",
-      desc:
-        "Juicy beef steak with a savory salad and sauce, perfectly seared and served with rustic sides for a satisfying gourmet experience.",
-      price: "$35",
-      image:
-        "https://imgs.search.brave.com/-YPs-31Kdu8J4UpU8iz8HuW5PCyEb1_lPN_uJEI2Y7c/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wNDMv/MTE1Lzk4NC9zbWFs/bC9iYnEtYmVlZi1z/dGVhay13aXRoLXNh/bGFkLWFuZC1zYXVj/ZS1zZXJ2ZWQtaW4t/ZGlzaC1pc29sYXRl/ZC1vbi10YWJsZS1z/aWRlLXZpZXctb2Yt/bWlkZGxlLWVhc3Qt/Zm9vZC1waG90by5q/cGc",
-    },
-    {
-      name: "Kimbap Rolls",
-      desc:
-        "Traditional Korean-style seaweed rice rolls filled with fresh vegetables and savory protein, perfect for light yet flavorful bites.",
-      price: "$18",
-      image:
-        "https://imgs.search.brave.com/mSTB5YdiZqGq7ELZsw6ATWhP-84ret9qmkgQpIpdHgQ/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzEzLzA5Lzg0LzIx/LzM2MF9GXzEzMDk4/NDIxNTNfZEwxYXhp/bUlzV2Y2Q3ZnYXRo/SjZqeGhUeHQ1TkFF/bDcuanBn",
-    },
-    {
-      name: "Prawn Curry",
-      desc:
-        "Aromatic prawn curry infused with rich coconut milk, exotic spices, and garnished with fresh herbs for a bold, coastal flavor.",
-      price: "$30",
-      image:
-        "https://imgs.search.brave.com/kzLYRrOEdcTIfukWJxguYVG61DnoXzgvl7EcGeAtWCE/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/cmVjaXBldGluZWF0/cy5jb20vdGFjaHlv/bi8yMDIzLzA4L1Bh/bmFuZy1jdXJyeS1w/cmF3bl84LWNsb3Nl/LXVwLmpwZz9yZXNp/emU9NzQ3LDc0Nw",
+      image: "https://imgs.search.brave.com/bxxdR7EWvdNTPRWYrOwbfTGGz6eNLTySO-_2JtEe4FQ/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9zaG9y/dGdpcmx0YWxsb3Jk/ZXIuY29tL3dwLWNv/bnRlbnQvdXBsb2Fk/cy8yMDIwLzA3L3Nw/aW5hY2gtYXJ0aWNo/b2tlLWJhc2lsLXBh/c3RhLXNxdWFyZS0y/LTUwMHg1MDAuanBn",
     },
   ];
 
-  return (
-    <div className="container-fluid"
-      style={{
-        background: "#181818",
-        width: "100%",
-        minHeight: "40%",
-        fontFamily: "'Poppins', Arial, sans-serif",
-        padding: "20px",
-        margin: "0",
-      }}>
-        <div className="col-12 text-center">
-          <h2
-            style={{
-              color: "#fff",
-              fontFamily: "'Playfair Display', serif",
-              fontWeight: 700,
-              fontSize: "2.2rem",
-              marginBottom: "14px",
-            }}
-          >
-            Signature Dishes
-          </h2>
-            <div
-            style={{
-              color: "#e2e2e2",
-              fontFamily: "'Poppins', Arial, sans-serif",
-              fontSize: "1.06rem",
-              fontWeight: 400,
-              margin: "0 auto 36px",
-              maxWidth: "650px",
-              lineHeight: 1.6,
-            }}
-          >
-            Our master chefs have perfected these culinary masterpieces that
-            define our restaurant's distinctive identity.
-          </div>
-        </div>
-          <div id="dishCarousel" className="carousel slide" data-bs-ride="carousel">
-        <div className="carousel-inner">
-          {dishes.map((dish, index) => (
-            <div className={`carousel-item ${index === 0 ? "active" : ""}`} key={dish.name}>
-             <div className="d-flex justify-content-center">
-  <div
-    style={{
-      background: "#232323",
-      borderRadius: "15px",
-      width: "90%", // default width for small screens
-      maxWidth: "500px", // limit max width
-      overflow: "hidden",
-      boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
-    }}
-    className="mx-auto"
-  >
-    <img
-      src={dish.image}
-      alt={dish.name}
-      className="d-block w-100"
-      style={{
-        aspectRatio: "1/1",
-        objectFit: "cover",
-        borderRadius: "15px 15px 0 0",
-      }}
-    />
-    <div style={{ padding: "24px", color: "#fff" }}>
-      <h4 style={{ fontSize: "1.5rem" }}>{dish.name}</h4>
-      <p style={{ fontSize: "1rem", minHeight: "60px" }}>{dish.desc}</p>
-      <div className="d-flex justify-content-between align-items-center">
-        <span style={{ color: "#E1AD01", fontWeight: 600, fontSize: "1.1rem" }}>
-          {dish.price}
-        </span>
-        <button
-          className="btn btn-outline-warning"
-          style={{ borderRadius: "20px", fontWeight: 600 }}
-        >
-          View Detail
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+  const [slides, setSlides] = useState([]);
 
+  const chunk = (arr, size) =>
+    arr.reduce((acc, _, i) => (i % size ? acc : [...acc, arr.slice(i, i + size)]), []);
+
+  useEffect(() => {
+    const updateChunks = () => {
+      const width = window.innerWidth;
+      const size = width < 576 ? 1 : width < 768 ? 2 : 3;
+      setSlides(chunk(hardDishes, size));
+    };
+    updateChunks();
+    window.addEventListener("resize", updateChunks);
+    return () => window.removeEventListener("resize", updateChunks);
+  }, []);
+
+  return (
+    <div
+      className="container-fluid"
+      style={{
+        background: "black",
+        width: "100%",
+        fontFamily: "'Poppins', Arial, sans-serif",
+        padding: "20px 0",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        overflow: "hidden",
+      }}
+    >
+      <div className="col-12 text-center mb-5">
+        <h2
+          style={{
+            color: "#fff",
+            fontFamily: "'Playfair Display', serif",
+            fontWeight: 700,
+            fontSize: "2.2rem",
+            marginBottom: "14px",
+          }}
+        >
+          Signature Dishes
+        </h2>
+        <div
+          style={{
+            color: "#e2e2e2",
+            fontSize: "1.06rem",
+            margin: "0 auto 36px",
+            maxWidth: "650px",
+            lineHeight: 1.6,
+          }}
+        >
+          Our master chefs have perfected these culinary masterpieces that define our restaurant's distinctive identity.
+        </div>
+      </div>
+
+      <div>
+        <div className="carousel-inner">
+          {slides.map((group, index) => (
+            <div className={`carousel-item ${index === 0 ? "active" : ""}`} key={index}>
+              <div className="row justify-content-center mx-0">
+                {group.map((dish) => (
+                  <div
+                    className="col-12 col-sm-6 col-md-4 d-flex justify-content-center"
+                    style={{ fontFamily: "'Playfair Display', serif" }}
+                    key={dish.name}
+                  >
+                    <div
+                      className="card"
+                      style={{
+                        width: "24rem",
+                        height: "500px",
+                        borderRadius: "15px",
+                        border: "none",
+                        margin: "20px",
+                        backgroundColor: "#181818",
+                        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+                      }}
+                    >
+                      <img
+                        src={dish.image}
+                        alt={dish.name}
+                        className="card-img-top"
+                        style={{
+                          borderTopLeftRadius: "15px",
+                          borderTopRightRadius: "15px",
+                          height: "300px",
+                          objectFit: "cover",
+                        }}
+                      />
+                      <div className="card-body" style={{ height: "calc(100% - 200px)", padding: "1rem" }}>
+                        <h5
+                          className="card-title"
+                          style={{
+                            color: "#fff",
+                            fontWeight: "700",
+                            fontSize: "1.2rem",
+                          }}
+                        >
+                          {dish.name}
+                        </h5>
+                        <p
+                          className="card-text"
+                          style={{
+                            color: "#fff",
+                            fontSize: "0.95rem",
+                            lineHeight: 1.5,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            fontFamily: "'Poppins', Arial, sans-serif",
+                          }}
+                        >
+                          {dish.desc}
+                        </p>
+                        <div className="d-flex justify-content-between align-items-center">
+                          <span style={{ color: "#E1AD01", fontWeight: 600, fontSize: "1.1rem" }}>
+                            {dish.price}
+                          </span>
+                          <button
+                            className="btn btn-outline-warning px-md-3 py-md-3"
+                            style={{
+                              borderRadius: "20px",
+                              color: "#fff",
+                              fontWeight: 600,
+                              justifyContent: "space-between",
+                              fontFamily: "'Poppins', Arial, sans-serif",
+                            }}
+                          >
+                            View Detail
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           ))}
         </div>
-
-        {/* Controls */}
-        <button className="carousel-control-prev" type="button" data-bs-target="#dishCarousel" data-bs-slide="prev">
-          <span className="carousel-control-prev-icon" aria-hidden="true" />
-        </button>
-        <button className="carousel-control-next" type="button" data-bs-target="#dishCarousel" data-bs-slide="next">
-          <span className="carousel-control-next-icon" aria-hidden="true" />
-        </button>
       </div>
+
+     <div className="text-center mt-md-4">
+  <a
+    href="#"
+    className="btn btn-light btn-lg view-menu-btn"
+  >
+    View Complete Menu
+  </a>
+
+  <style jsx>{`
+    .view-menu-btn {
+      background-color: #E1AD01;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 25px;
+      text-transform: uppercase;
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    @media (max-width: 576px) {
+      .view-menu-btn {
+        font-size: 0.9rem;
+        padding: 8px 16px;
+        width: 90%;
+      }
+    }
+  `}</style>
+</div>
+
     </div>
   );
 };
 
-export default Menu;
+export default Menu;  
