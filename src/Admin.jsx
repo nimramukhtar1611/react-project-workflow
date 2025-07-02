@@ -22,8 +22,13 @@ function Admin() {
         setError("Invalid Credentials");
       }
     } catch (err) {
-      setError("Error Occured");
-    }
+  if (err.response && err.response.data && err.response.data.msg) {
+    setError(err.response.data.msg);
+  } else {
+    setError("Error Occurred");
+  }
+}
+
   };
 
   return (
