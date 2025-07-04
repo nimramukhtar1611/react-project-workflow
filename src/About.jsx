@@ -12,12 +12,12 @@ const AboutPage = () => {
     axios
       .get("http://localhost:8000/api/footer")
       .then((res) => setFooterData(res.data))
-      .catch((err) => setError("Failed to load footer data"));
+       .catch((err) => console.log(err));
 
     axios
       .get("http://localhost:8000/api/contact")
       .then((res) => setContactData(res.data))
-      .catch((err) => setError("Failed to load contact info"));
+ .catch((err) => console.log(err));
   }, []);
 
   const socialIcons = {

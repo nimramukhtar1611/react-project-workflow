@@ -1,5 +1,5 @@
 // App.jsx
-import React, { useContext } from 'react';
+import React, { useContext,  useState  } from 'react';
 import { Switch, Route, useLocation } from 'react-router-dom';
 import AppContext from './components/context/appContext';
 import Navbar from './components/Navbar';
@@ -9,6 +9,8 @@ import Dashboard from './Dashboard';
 import Admin from './Admin';
 import Createcategory from './Createcategory';
 import Viewcategory from './Viewcategory';
+import Footeredit from './components/Footeredit';
+import Footer from './components/Footer';
 import Createproduct from './Createproduct'
 import CategoryPage from './CategoryPage';
 import ViewProduct from './ViewProduct'
@@ -18,7 +20,6 @@ function App() {
   const context = useContext(AppContext);
   const { helloworld } = context;
   console.log(helloworld);
-
   const location = useLocation();
   const hideNavbar = ["/admin", "/dashboard", "/createcategory", "/viewcategory","/createproduct","/viewproduct"].some((path) =>
     location.pathname.toLowerCase().startsWith(path)
