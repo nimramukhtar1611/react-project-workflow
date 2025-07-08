@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Story from './components/Story';
 import Menu from './components/Menu';
 import Chef from './components/Chef';
+import SpecialMenu from './components/SpeacialMenu';
 import Dine from './components/Dine';
 import Guests from './components/Guests';
 import Moment from './components/Moment';
@@ -10,6 +11,7 @@ import Visit from './components/Visit';
 import Reservation from './components/Reservation';
 import Footer from './components/Footer';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { toast } from 'react-toastify';
 
 const Home = () => {
   const [meta, setMeta] = useState({ title: '', description: '' });
@@ -23,7 +25,8 @@ const Home = () => {
           setMeta({ title: data.title, description: data.description });
         }
       } catch (error) {
-        console.error('Error fetching meta:', error);
+        console.error('Error fetching meta:', error)
+        toast.error ("failed to fetch");
       }
     };
 
@@ -54,6 +57,7 @@ const Home = () => {
       <Moment />
       <Dine />
       <Visit />
+      <SpecialMenu/>
       <Offer />
       <Guests />
       <Reservation />

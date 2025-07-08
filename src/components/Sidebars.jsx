@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom"; 
+import { useHistory, useLocation } from "react-router-dom";
 
 const sidebarOptions = [
   { name: "Basic Settings", icon: "\u2699\ufe0f", path: "/dashboard" },
@@ -13,6 +13,8 @@ const Sidebar = ({ active }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const history = useHistory();
+    const location = useLocation(); 
+
 
   const toggleSidebar = () => setIsOpen((prev) => !prev);
 
@@ -102,7 +104,7 @@ const Sidebar = ({ active }) => {
           height: "100vh",
           width: isMobile ? "70vw" : "50%",
           maxWidth: "300px",
-          background: "#222",
+          background: isMobile ? "#dcdcdc" : "#222", 
           color: "#fff",
           zIndex: 1051,
           transform: isMobile && !isOpen ? "translateX(-100%)" : "translateX(0)",
@@ -129,31 +131,33 @@ const Sidebar = ({ active }) => {
         <ul style={{ listStyle: "none", padding: 0, width: "100%" }}>
           {sidebarOptions.map((option) => (
             <li key={option.name}>
-              <button
-                className={`sidebar-option-animate${
-                  active === option.name ? " sidebar-option-active" : ""
-                }`}
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  color: "#fff",
-                  width: "100%",
-                  textAlign: "left",
-                  padding: "12px 30px",
-                  fontSize: "1.1rem",
-                  marginBottom: "10px",
-                  cursor: "pointer",
-                  fontFamily: "'Poppins', sans-serif",
-                  borderRadius: "6px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-                }}
-                onClick={() => handleNavigation(option.path)}
-              >
-                <span style={{ fontSize: "1.3rem" }}>{option.icon}</span>
-                <span>{option.name}</span>
-              </button>
+          <button
+  className="sidebar-option-animate"
+  style={{
+    background: location.pathname === option.path ? "#dcdcdc" : "transparent",
+    color: location.pathname === option.path ? "#000" : "#fff",
+    fontWeight: location.pathname === option.path ? "bold" : "normal",
+    width: "100%",
+    textAlign: "left",
+    padding: "12px 30px",
+    fontSize: "1.1rem",
+    marginBottom: "10px",
+    cursor: "pointer",
+    fontFamily: "'Poppins', sans-serif",
+    borderRadius: "6px",
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    boxShadow: location.pathname === option.path ? "0 2px 10px rgba(0,0,0,0.1)" : "none",
+  }}
+  onClick={() => handleNavigation(option.path)}
+>
+  <span style={{ fontSize: "1.3rem" }}>{option.icon}</span>
+  <span>{option.name}</span>
+</button>
+
+
+
             </li>
           ))}
         </ul>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { toast } from 'react-toastify';
 
 function Meta() {
   const [meta, setMeta] = useState({ title: '', description: '' });
@@ -25,7 +26,9 @@ function Meta() {
           setMeta(savedData.meta || defaultMeta);
         }
       } catch (err) {
-        console.error('Error handling metadata:', err);
+        console.error('Error handling metadata:', err)
+        toast.error("error fetching data ")
+        ;
       }
     };
 

@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaFacebook, FaTwitter, FaInstagram, FaYoutube } from "react-icons/fa";
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
 
 function Footer() {
   const [footer, setFooter] = useState(null);
@@ -10,14 +12,14 @@ function Footer() {
   useEffect(() => {
     axios.get("http://localhost:8000/api/footer")
       .then((res) => setFooter(res.data))
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err),toast.error("Failed to load footer info")
+);
 
     axios.get("http://localhost:8000/api/contact")
       .then((res) => setContact(res.data))
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err),toast.error("Failed to load footer info"));
   }, []);
 
-  // Agar footer data nahi aya to null return kro
   if (!footer?.socialLinks) return null;
 
   return (

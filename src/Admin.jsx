@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom"; 
+import { toast } from "react-toastify";
 
 function Admin() {
   const [username, setUsername] = useState("");
@@ -19,13 +20,13 @@ function Admin() {
         localStorage.setItem("isAuthenticated", "true");
         history.push("/dashboard");
       } else {
-        setError("Invalid Credentials");
+        toast.error("Invalid Credentials");
       }
     } catch (err) {
   if (err.response && err.response.data && err.response.data.msg) {
-    setError(err.response.data.msg);
+     toast.error(err.response.data.msg);
   } else {
-    setError("Error Occurred");
+     toast.error("Error Occurred");
   }
 }
 

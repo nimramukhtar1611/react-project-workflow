@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
-
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
 const defaultFooter = {
   brand: "",
   description: "",
@@ -89,9 +90,9 @@ const Footeredit = () => {
       );
       setForm(res.data);
       setOriginal(res.data);
-      setMessage("Footer updated successfully!");
+      toast.success("Footer updated successfully!");
     } catch (err) {
-      setError("Failed to update. Please try again.");
+    toast.error  ("Failed to update. Please try again.");
     }
   };
 

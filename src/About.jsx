@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaFacebook, FaTwitter, FaInstagram, FaYoutube } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const AboutPage = () => {
   const [footerData, setFooterData] = useState(null);
@@ -12,12 +13,17 @@ const AboutPage = () => {
     axios
       .get("http://localhost:8000/api/footer")
       .then((res) => setFooterData(res.data))
-       .catch((err) => console.log(err));
+       .catch((err) => console.log(err),
+      toast.error("failed to fetch contact")
+)
+       ;
 
     axios
       .get("http://localhost:8000/api/contact")
       .then((res) => setContactData(res.data))
- .catch((err) => console.log(err));
+ .catch((err) => console.log(err),
+toast.error("failed to fetch contact")
+);
   }, []);
 
   const socialIcons = {
@@ -28,8 +34,29 @@ const AboutPage = () => {
   };
 
   if (!footerData || !contactData)
-    return <div className="text-center py-5">Loading...</div>;
-
+    return    <div
+      style={{
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#f6f7fa",
+      }}
+    >
+      <div
+        style={{
+          color: "#E1AD01",
+          fontWeight: "bold",
+          letterSpacing: "3px",
+          fontSize: "clamp(2.5rem, 8vw, 5rem)",
+          fontFamily: "'Playfair Display', serif",
+          textAlign: "center",
+          textShadow: "2px 2px 5px rgba(0,0,0,0.6)",
+        }}
+      >
+        AURUM...
+      </div>
+    </div>
   return (
     <div
       style={{

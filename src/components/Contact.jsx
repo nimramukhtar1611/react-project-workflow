@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -15,7 +17,10 @@ const Contact = () => {
       .then((res) => {
         if (res.data) setFormData(res.data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err),
+        toast.error("Failed to load contact info")
+
+      )
   }, []);
 
   const handleChange = (e) => {
@@ -26,8 +31,8 @@ const Contact = () => {
     e.preventDefault();
     axios
       .put("http://localhost:8000/api/contact/update", formData)
-      .then(() => alert("Contact info updated!"))
-      .catch((err) => console.log(err));
+      .then(() =>  toast.success("✅ Contact info updated!"))
+      .catch((err) => console.log(err), toast.error("❌ Failed to update contact info"));
   };
 
   return (

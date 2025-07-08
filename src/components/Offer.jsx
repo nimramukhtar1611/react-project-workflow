@@ -122,8 +122,8 @@ useEffect(() => {
   };
 
   return (
-    <div>
-      <div className="container" style={{ maxWidth: 1200, marginTop: 48 }}>
+    <div style={{backgroundColor:"#f6f7fa",}}>
+      <div className="container" style={{ maxWidth: 1200,  }}>
         <div style={sectionTitle}>Special Offers & Private Events</div>
         <div style={subText}>
           Exclusive dining experiences crafted for memorable occasions

@@ -64,8 +64,8 @@ const stepText = {
 const boxShadow = "0 1px 6px 0 rgba(60,72,88,.04)";
 const borderRadius = 16;
   return (
-    <div>
-      <div className="container" style={{ maxWidth: 1200, marginTop: 30 }}>
+    <div style={{backgroundColor:"#f6f7fa", paddingBottom:16 }}>
+      <div className="container" style={{ maxWidth: 1200  }}>
       <div style={sectionTitle}>Simple Steps to Dine</div>
       <div style={subText}>
         Experience our seamless dining journey from reservation to dessert!

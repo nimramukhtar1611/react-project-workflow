@@ -3,30 +3,31 @@ const Story = () => {
   return (
     <>
       {/* Hero Section */}
-     <section className="position-relative" style={{ minHeight: "100vh", overflow: "hidden" }}>
+<section className="position-relative" style={{minHeight: "100vh", overflow: "hidden" }}>
   {/* Carousel Background */}
   <div id="heroCarousel" className="carousel slide carousel-fade" data-bs-ride="carousel">
-    <div className="carousel-inner">
-      {[
-        "https://imgs.search.brave.com/kXVBKecEKuC7MDG2LDqh7mhJ0K92Penx-C1NcQHXfDY/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzA2LzM2LzMwLzI2/LzM2MF9GXzYzNjMw/MjYwOV9UYjFKdERU/UTR6YXdPMHViNkwy/Zkh6bHJXNTg2Zjl0/ci5qcGc",
-        "https://imgs.search.brave.com/JJRI54tWk20uapF6iLVPKo7Lc8ZJspK5fuT7NsFMA8E/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMTgy/MDMzNzA3L3Bob3Rv/L3NocmltcC1zY2Ft/cGkuanBnP3M9NjEy/eDYxMiZ3PTAmaz0y/MCZjPXNYQ3lBbVZP/SUc5ODY2Q0RiRGRn/eElfNDM4ZVYyUUhm/YWt3RHFxZ3hnekE9",
-        "https://imgs.search.brave.com/wnpMGzwvm0ESY-nqm43sDgHIrABOtXYHd294--TWvI0/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pMC53/cC5jb20vY2hlZXNl/c2NpZW50aXN0LmNv/bS93cC1jb250ZW50/L3VwbG9hZHMvMjAy/My8wNy9Qcm92b2xl/dGEuanBnP3Jlc2l6/ZT0xMDI0LDc2OCZz/c2w9MQ"
-      ].map((src, index) => (
-        <div className={`carousel-item ${index === 0 ? "active" : ""}`} key={index}>
-          <img
-            src={src}
-            className="d-block w-100"
-            style={{
-              objectFit: "cover",
-              height: "100vh",
-              filter: "brightness(0.4)", 
-            }}
-            alt={`Slide ${index + 1}`}
-          />
-        </div>
-      ))}
+  <div className="carousel-inner">
+  {[
+    "https://imgs.search.brave.com/kXVBKecEKuC7MDG2LDqh7mhJ0K92Penx-C1NcQHXfDY/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzA2LzM2LzMwLzI2/LzM2MF9GXzYzNjMw/MjYwOV9UYjFKdERU/UTR6YXdPMHViNkwy/Zkh6bHJXNTg2Zjl0/ci5qcGc",
+    "https://imgs.search.brave.com/JJRI54tWk20uapF6iLVPKo7Lc8ZJspK5fuT7NsFMA8E/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMTgy/MDMzNzA3L3Bob3Rv/L3NocmltcC1zY2Ft/cGkuanBnP3M9NjEy/eDYxMiZ3PTAmaz0y/MCZjPXNYQ3lBbVZP/SUc5ODY2Q0RiRGRn/eElfNDM4ZVYyUUhm/YWt3RHFxZ3hnekE9",
+    "https://imgs.search.brave.com/wnpMGzwvm0ESY-nqm43sDgHIrABOtXYHd294--TWvI0/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pMC53/cC5jb20vY2hlZXNl/c2NpZW50aXN0LmNv/bS93cC1jb250ZW50/L3VwbG9hZHMvMjAy/My8wNy9Qcm92b2xl/dGEuanBnP3Jlc2l6/ZT0xMDI0LDc2OCZz/c2w9MQ"
+  ].map((src, index) => (
+    <div className={`carousel-item ${index === 0 ? "active" : ""}`} key={index}>
+      <img
+        src={src}
+        className="d-block w-100"
+        style={{
+          objectFit: "cover",
+          height: "100vh",
+          filter: "brightness(0.4)",
+        }}
+        alt={`Slide ${index + 1}`}
+      />
     </div>
-  </div>
+  ))}
+</div>
+
+    </div>
   {/* Overlay Text */}
   <div className="position-absolute top-50 start-50 translate-middle text-center px-3" style={{ zIndex: 2 }}>
 
@@ -94,9 +95,8 @@ const Story = () => {
   </div>
 </section>
 
-
-      {/* Story Section */}
-      <section className="py-5" style={{ background: "#fff" }}>
+   {/* Story Section */} 
+      <section className="pt-5" style={{ backgroundColor:"#f6f7fa" }}>
         <div className="container">
           <div className="row align-items-center">
             <div className="col-12 col-md-5 d-flex justify-content-center mb-4 mb-md-0">

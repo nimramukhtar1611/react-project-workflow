@@ -47,7 +47,7 @@ const Visit = () => {
   };
 
   return (
-    <section className="py-4">
+    <section className="py-4 " style={{backgroundColor:"#f6f7fa"}}>
       <div className="container">
         <div className="row g-0 shadow-sm rounded overflow-hidden" style={{ boxShadow, borderRadius }}>
           {/* Image Section */}
@@ -75,7 +75,17 @@ const Visit = () => {
                 Inquire about our seasonal tasting menus for a curated dining journey.
               </li>
             </ul>
-            <button style={offerBtn}>Reserve Your Experience</button>
+            <button style={{...offerBtn,
+      backgroundColor: "#E1AD01",
+      color: "#fff",
+      padding: "clamp(15px, 2vw, 12px) clamp(14px, 5vw, 20px)",
+      borderRadius: "24px",
+      textTransform: "uppercase",
+      fontFamily: "'Playfair Display', serif",
+      fontWeight: 700,
+      fontSize: "clamp(0.75rem, 2.2vw, 1rem)",
+      transition: "all 0.3s ease-in-out",
+    }} >Reserve Your Experience</button>
           </div>
         </div>
       </div>

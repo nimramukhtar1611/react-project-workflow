@@ -3,7 +3,10 @@ import React, { useContext,  useState  } from 'react';
 import { Switch, Route, useLocation } from 'react-router-dom';
 import AppContext from './components/context/appContext';
 import Navbar from './components/Navbar';
+import CheckoutPage from './CheckoutPage';
 import About from './About';
+import ProductDetail from './ProductDetail';
+import 'react-toastify/dist/ReactToastify.css';
 import Home from './Home';
 import Dashboard from './Dashboard';
 import Admin from './Admin';
@@ -34,6 +37,10 @@ function App() {
         <Route exact path="/Admin" component={Admin} />
         <Route path="/category/:title" component={CategoryPage } />
         <Route exact path="/Dashboard" component={Dashboard} />
+                <Route exact path="/product/:id" component={ProductDetail} />
+                        <Route exact path="/checkout" component={CheckoutPage} />
+
+
                 <Route exact path="/CreateCategory" component={Createcategory} />
                                 <Route exact path="/ViewCategory" component={Viewcategory} />
        <Route exact path="/Createproduct" component={Createproduct} />
