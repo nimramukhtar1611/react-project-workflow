@@ -1,13 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import AppContext from './context/appContext'
 
 const Navbar = () => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [categories, setCategories] = useState([]);
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSmallDevice, setIsSmallDevice] = useState(window.innerWidth < 992);
+ const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+ const { cartItem, updateCart } = useContext(AppContext);
+const product = cartItem?.product;
+const quantity = cartItem?.quantity || 1;
 
   const navItems = [
     { label: 'Home', to: '/' },
@@ -119,27 +127,148 @@ const Navbar = () => {
           })}
         </ul>
 
-        <button
-          className="btn btn-warning px-4 py-2"
+  <div>
+      <button
+        className="btn px-3 py-2"
+        style={{
+          background: 'transparent',
+          border: 'none',
+          fontSize: '1.5rem',
+          color: '#E1AD01',
+          position: 'relative',
+          cursor: 'pointer',
+        }}
+        onClick={toggleSidebar}
+      >
+        🛒
+      </button>
+
+      {/* Overlay */}
+      {isSidebarOpen && (
+        <div
+          onClick={toggleSidebar}
           style={{
-            background: '#E1AD01',
-            borderRadius: '10px',
-            border: 'none',
-            fontWeight: '600',
-            color: '#fff',
-            transition: 'all 0.3s ease-in-out'
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            backgroundColor: 'rgba(0, 0, 0, 0.4)',
+            zIndex: 999,
           }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.background = '#c49802';
-            e.currentTarget.style.transform = 'scale(1.05)';
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.background = '#E1AD01';
-            e.currentTarget.style.transform = 'scale(1)';
-          }}
-        >
-          Reserve Now
-        </button>
+        />
+      )}
+
+      {/* Sidebar */}
+     {/* Sidebar */}
+<div
+  style={{
+    position: 'fixed',
+    top: 0,
+    right: isSidebarOpen ? 0 : '-320px',
+    width: '300px',
+    height: '100vh',
+    backgroundColor: '#fff',
+    boxShadow: '-2px 0 10px rgba(0,0,0,0.3)',
+    padding: '20px',
+    zIndex: 1000,
+    transition: 'right 0.3s ease-in-out',
+    borderTopLeftRadius: '10px',
+    borderBottomLeftRadius: '10px',
+    display: 'flex',
+    flexDirection: 'column',
+  }}
+>
+  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <h3 style={{ margin: 0 }}>🛍️ Your Cart</h3>
+    <button
+      onClick={toggleSidebar}
+      style={{
+        background: 'none',
+        border: 'none',
+        fontSize: '1.5rem',
+        cursor: 'pointer',
+        color: '#999',
+      }}
+      title="Close"
+    >
+      &times;
+    </button>
+  </div>
+
+  <hr style={{ margin: '15px 0' }} />
+
+  {/* Dynamic Product Content */}
+ {product ? (
+  <div style={{ flex: 1 }}>
+    <img
+      src={product.images?.[0] || "https://via.placeholder.com/150"}
+      alt={product.title}
+      style={{ width: '100%', borderRadius: '8px', marginBottom: '10px' }}
+    />
+    <h5 style={{ margin: '10px 0', fontWeight: '600' }}>{product.title}</h5>
+<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '10px' }}>
+  <button
+    onClick={() => updateCart(product, Math.max(quantity - 1, 1))}
+    style={{
+      backgroundColor: '#E1AD01',
+      color: '#fff',
+      border: 'none',
+      borderRadius: '50%',
+      width: '30px',
+      height: '30px',
+      fontWeight: 'bold',
+      fontSize: '1rem',
+      cursor: 'pointer',
+    }}
+  >
+    −
+  </button>
+
+  <span style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>{quantity}</span>
+
+  <button
+    onClick={() => updateCart(product, quantity + 1)}
+    style={{
+      backgroundColor: '#E1AD01',
+      color: '#fff',
+      border: 'none',
+      borderRadius: '50%',
+      width: '30px',
+      height: '30px',
+      fontWeight: 'bold',
+      fontSize: '1rem',
+      cursor: 'pointer',
+    }}
+  >
+    +
+  </button>
+</div>
+  
+  </div>
+) : (
+  <p style={{ color: '#777' }}>Your cart is currently empty.</p>
+)}
+
+  <button
+    onClick={toggleSidebar}
+    style={{
+      marginTop: 'auto',
+      backgroundColor: '#E1AD01',
+      color: '#fff',
+      border: 'none',
+      padding: '10px',
+      borderRadius: '5px',
+      cursor: 'pointer',
+      fontWeight: 'bold',
+    }}
+  >
+    Continue
+  </button>
+</div>
+
+
+      </div>
       </div>
     </nav>
   );

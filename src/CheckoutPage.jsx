@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
+import AppContext from "./components/context/appContext";
 
 const CheckoutPage = () => {
-  const location = useLocation();
-  const { title, quantity, price } = location.state || {};
+  const { cartItem ,clearCart} = useContext(AppContext);
+  const product = cartItem?.product;
+  const quantity = cartItem?.quantity || 1;
 
+  const location = useLocation();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -16,38 +19,16 @@ const CheckoutPage = () => {
     postalCode: "",
     paymentMethod: "Cash on Delivery",
   });
-  
 
-
-  if (!title || !price || !quantity) {
+  if (!product || !product.title || !product.price || !quantity) {
     return (
-      <div
-      style={{
-        height: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "#f6f7fa",
-      }}
-    >
-      <div
-        style={{
-          color: "#E1AD01",
-          fontWeight: "bold",
-          letterSpacing: "3px",
-          fontSize: "clamp(2.5rem, 8vw, 5rem)",
-          fontFamily: "'Playfair Display', serif",
-          textAlign: "center",
-          textShadow: "2px 2px 5px rgba(0,0,0,0.6)",
-        }}
-      >
-        AURUM...
+      <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
+        <h1 className="text-warning">AURUM...</h1>
       </div>
-    </div>
     );
   }
 
-  const numericPrice = parseFloat(String(price).replace(/[^0-9.]/g, ""));
+  const numericPrice = parseFloat(String(product.price).replace(/[^0-9.]/g, ""));
   const total = numericPrice * quantity;
 
   const handleChange = (e) => {
@@ -55,20 +36,22 @@ const CheckoutPage = () => {
   };
 
   const handleSubmit = (e) => {
-  e.preventDefault();
-  console.log("Order submitted:", formData);
-  toast.success("Order placed successfully!");
-  setFormData({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    address: "",
-    city: "",
-    postalCode: "",
-    paymentMethod: "Cash on Delivery",
-  });
-};
+    e.preventDefault();
+    toast.success("Order placed successfully!");
+    console.log("Order submitted:", formData);
+    setFormData({
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      address: "",
+      city: "",
+      postalCode: "",
+      paymentMethod: "Cash on Delivery",
+    });
+      clearCart();
+
+  };
 
   return (
     <div
@@ -81,7 +64,7 @@ const CheckoutPage = () => {
         boxShadow: "0 0 15px rgba(0,0,0,0.1)",
       }}
     >
-     <h2
+   <h2
   className="mb-4 text-center fw-bold"
   style={{
     fontSize: "clamp(1.8rem, 5vw, 3rem)",
@@ -91,10 +74,8 @@ const CheckoutPage = () => {
 >
   Checkout
 </h2>
-
-
-      <form onSubmit={handleSubmit}>
-        <h4 className="mb-3 fw-bold" style={{ color: "#333" ,fontFamily: "'Playfair Display', serif",    fontSize: "clamp(1.3rem, 5vw, 2rem)",
+      <form onSubmit={handleSubmit} className=" ">
+ <h4 className="mb-3 fw-bold" style={{ color: "#333" ,fontFamily: "'Playfair Display', serif",    fontSize: "clamp(1.3rem, 5vw, 2rem)",
 }}>Contact Details</h4>
 
         <div className="row mb-3">
@@ -205,16 +186,16 @@ const CheckoutPage = () => {
         </div>
 
         <hr className="my-4" />
-
-        <h4 className="mb-3 fw-bold" style={{ color: "#333",fontFamily: "'Playfair Display', serif",  fontSize: "clamp(1.3rem, 5vw, 2rem)" }}>Order Summary</h4>
-        <div className="px-3 py-3" style={{ backgroundColor: "#fff",  fontSize: "clamp(0.9rem, 5vw, 1rem)",borderRadius: "8px", border: "1px solid #dcdcdc" }}>
-          <p><strong>Product:</strong> {title}</p>
+        <h4 className="mb-3 fw-bold" style={{ color: "#333" ,fontFamily: "'Playfair Display', serif",    fontSize: "clamp(1.3rem, 5vw, 2rem)",
+}}>Order Summary</h4>
+        <div className="bg-light p-3 rounded">
+          <p><strong>Product:</strong> {product.title}</p>
           <p><strong>Quantity:</strong> {quantity}</p>
           <p><strong>Unit Price:</strong> Rs {numericPrice}</p>
-          <h5 className="text-success"><strong>Total:</strong> Rs {total.toFixed(2)}</h5>
+          <h5 className="text-success">Total: Rs {total.toFixed(2)}</h5>
         </div>
 
-        <button
+    <button
           type="submit"
           className="btn w-100 mt-4"
           style={{
@@ -236,8 +217,7 @@ const CheckoutPage = () => {
               }}
         >
           Place Order
-        </button>
-      </form>
+        </button>      </form>
     </div>
   );
 };

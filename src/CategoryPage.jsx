@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+ import React, { useEffect, useState } from "react";
+import { useParams, useHistory } from "react-router-dom";
 import { Carousel } from 'react-bootstrap'; 
 import axios from "axios";
-import { useHistory } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
@@ -41,7 +40,7 @@ const CustomCarousel = ({ images }) => {
 };
 
 const CategoryPage = () => {
-  const history = useHistory();
+  const history = useHistory(); // ✅ Using useHistory for React Router v5
   const { title } = useParams();
   const [category, setCategory] = useState(null);
   const [products, setProducts] = useState([]);
@@ -53,8 +52,13 @@ const CategoryPage = () => {
       const found = res.data.find(
         (cat) => cat.title.toLowerCase() === title.toLowerCase()
       );
-      if (found && !Array.isArray(found.images) && Array.isArray(found.image)) {
-        found.images = found.image;
+
+      if (found && (!Array.isArray(found.images) || found.images.length === 0)) {
+        if (Array.isArray(found.image)) {
+          found.images = found.image;
+        } else if (found.image) {
+          found.images = [found.image];
+        }
       }
 
       setCategory(found);
@@ -68,96 +72,99 @@ const CategoryPage = () => {
         });
       }
     });
+
+    window.scrollTo(0, 0);
   }, [title]);
 
   if (!category) {
     return (
-     <div
-      style={{
-        height: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "#f6f7fa",
-      }}
-    >
       <div
         style={{
-          color: "#E1AD01",
-          fontWeight: "bold",
-          letterSpacing: "3px",
-          fontSize: "clamp(2.5rem, 8vw, 5rem)",
-          fontFamily: "'Playfair Display', serif",
-          textAlign: "center",
-          textShadow: "2px 2px 5px rgba(0,0,0,0.6)",
+          height: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#f6f7fa",
         }}
       >
-        AURUM...
+        <div
+          style={{
+            color: "#E1AD01",
+            fontWeight: "bold",
+            letterSpacing: "3px",
+            fontSize: "clamp(2.5rem, 8vw, 5rem)",
+            fontFamily: "'Playfair Display', serif",
+            textAlign: "center",
+            textShadow: "2px 2px 5px rgba(0,0,0,0.6)",
+          }}
+        >
+          AURUM...
+        </div>
       </div>
-    </div>
     );
   }
 
   return (
     <>
       {/* Hero Section */}
-     <section
-      className="position-relative w-100"
-      style={{ height: "100vh", overflow: "hidden" }}
-    >
-      {Array.isArray(category.images) && category.images.length > 0 ? (
-        <Carousel
-          fade
-          controls={false} 
-          indicators={false}
-          interval={3000} 
-          pause={false} 
-          style={{ height: "100vh" }}
-        >
-          {category.images.map((image, index) => (
-            <Carousel.Item key={index} style={{ height: "100vh" }}>
-              <img
-                src={image}
-                alt={`Slide ${index}`}
-                className="d-block w-100"
-                style={{
-                  objectFit: "cover",
-                  height: "100vh",
-                  filter: "brightness(0.7)"
-                }}
-              />
-            </Carousel.Item>
-          ))}
-        </Carousel>
-      ) : (
-        <div
-          className="w-100 h-100 bg-secondary d-flex justify-content-center align-items-center text-white"
-          style={{ height: "100vh" }}
-        >
-          No images available
-        </div>
-      )}
-
-      <div
-        className="position-absolute top-50 start-50 translate-middle text-center px-3"
-        style={{ zIndex: 2 }}
+      <section
+        className="position-relative w-100"
+        style={{ height: "100vh", overflow: "hidden" }}
       >
-        <h1
-          className="fw-bold mb-3"
-          style={{
-            color: "#fff",
-            fontSize: "clamp(5.8rem, 5vw, 10.4rem)",
-            letterSpacing: "2px",
-            lineHeight: 1.2,
-            textShadow: "0 1px 10px rgba(60,60,60,0.09)",
-            fontFamily: "'Playfair Display', serif",
-          }}
+        {Array.isArray(category.images) && category.images.length > 0 ? (
+          <Carousel
+            fade
+            controls={false}
+            indicators={false}
+            interval={3000}
+            pause={false}
+            style={{ height: "100vh" }}
+          >
+            {category.images.map((image, index) => (
+              <Carousel.Item key={index} style={{ height: "100vh" }}>
+                <img
+                  src={image}
+                  alt={`Slide ${index}`}
+                  className="d-block w-100"
+                  style={{
+                    objectFit: "cover",
+                    height: "100vh",
+                    filter: "brightness(0.7)"
+                  }}
+                />
+              </Carousel.Item>
+            ))}
+          </Carousel>
+        ) : (
+          <div
+            className="w-100 h-100 bg-secondary d-flex justify-content-center align-items-center text-white"
+            style={{ height: "100vh" }}
+          >
+            No images available
+          </div>
+        )}
+
+        <div
+          className="position-absolute top-50 start-50 translate-middle text-center px-3"
+          style={{ zIndex: 2 }}
         >
-          {category.title}
-        </h1>
-      </div>
-    </section>
-   {/* Product Cards */}
+          <h1
+            className="fw-bold mb-3"
+            style={{
+              color: "#fff",
+              fontSize: "clamp(5.8rem, 5vw, 10.4rem)",
+              letterSpacing: "2px",
+              lineHeight: 1.2,
+              textShadow: "0 1px 10px rgba(60,60,60,0.09)",
+              fontFamily: "'Playfair Display', serif",
+            }}
+          >
+            {category.title}
+          </h1>
+        </div>
+      </section>
+
+      {/* Product Cards */}
       <div
         className="container-fluid py-5"
         style={{
@@ -224,30 +231,30 @@ const CategoryPage = () => {
                   Rs {product.price}
                 </span>
                 <br />
-<button
-  className="btn btn-outline-warning px-3 py-1 mt-2 fw-semibold"
-  style={{
-    borderRadius: "30px",
-    fontSize: "1rem",
-    letterSpacing: "1px",
-    transition: "all 0.3s ease",
-    backgroundColor: "transparent",
-    color: "#E1AD01",
-  }}
-  onMouseEnter={(e) => {
-    e.target.style.backgroundColor = "#E1AD01";
-    e.target.style.color = "#fff";
-    e.target.style.boxShadow = "0 4px 12px rgba(225, 173, 1, 0.5)";
-  }}
-  onMouseLeave={(e) => {
-    e.target.style.backgroundColor = "transparent";
-    e.target.style.color = "#E1AD01";
-    e.target.style.boxShadow = "none";
-  }}
-    onClick={() => history.push(`/product/${product._id}`)}
-
->
-Add To Cart</button>
+                <button
+                  className="btn btn-outline-warning px-3 py-1 mt-2 fw-semibold"
+                  style={{
+                    borderRadius: "30px",
+                    fontSize: "1rem",
+                    letterSpacing: "1px",
+                    transition: "all 0.3s ease",
+                    backgroundColor: "transparent",
+                    color: "#E1AD01",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = "#E1AD01";
+                    e.target.style.color = "#fff";
+                    e.target.style.boxShadow = "0 4px 12px rgba(225, 173, 1, 0.5)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = "transparent";
+                    e.target.style.color = "#E1AD01";
+                    e.target.style.boxShadow = "none";
+                  }}
+                  onClick={() => history.push(`/product/${product._id}`)}
+                >
+                  Add To Cart
+                </button>
               </div>
             </div>
           ))}
@@ -267,6 +274,9 @@ Add To Cart</button>
             backgroundColor: "rgba(0,0,0,0.95)",
             zIndex: 1050
           }}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Product Image Viewer"
         >
           <div
             className="position-relative"
@@ -328,4 +338,4 @@ Add To Cart</button>
   );
 };
 
-export default CategoryPage;
+export default CategoryPage;  

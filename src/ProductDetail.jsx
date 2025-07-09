@@ -1,14 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useContext } from "react";
 import axios from "axios";
 import { useParams, useHistory } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { toast } from "react-toastify";
-
+import AppContext from './components/context/appContext'
 const ProductDetail = () => {
   const { id } = useParams();
   const history = useHistory();
   const [product, setProduct] = useState(null);
-  const [quantity, setQuantity] = useState(1);
+const { updateCart , cartItem } = useContext(AppContext); 
+const quantity = cartItem?.product?._id === id ? cartItem.quantity : 1;
+useEffect(() => {
+  if (product) {
+    updateCart(product, quantity);
+  }
+}, [quantity, product]);
+
 
   useEffect(() => {
     axios.get("http://localhost:8000/api/products")
@@ -22,8 +29,13 @@ const ProductDetail = () => {
     toast.error("failed to get product"));
   }, [id]);
 
-  const increaseQty = () => setQuantity(prev => prev + 1);
-  const decreaseQty = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
+ const increaseQty = () => {
+  if (product) updateCart(product, quantity + 1);
+};
+const decreaseQty = () => {
+  if (product && quantity > 1) updateCart(product, quantity - 1);
+};
+
 
   const handleCheckout = () => {
     if (!product) return;
@@ -169,4 +181,3 @@ const ProductDetail = () => {
 };
 
 export default ProductDetail;
-
