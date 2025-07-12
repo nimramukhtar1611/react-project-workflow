@@ -3,12 +3,14 @@ import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from "react-toastify";
+
 const Menusee = () => {
   const [dishes, setDishes] = useState([]);
   const [editDish, setEditDish] = useState(null);
   const [newTitle, setNewTitle] = useState("");
   const [newDesc, setNewDesc] = useState("");
   const [newPrice, setNewPrice] = useState("");
+  const [fileInputs, setFileInputs] = useState([0]);
   const [newImageUrls, setNewImageUrls] = useState([""]);
   const [newFiles, setNewFiles] = useState([]);
   const [previewImages, setPreviewImages] = useState([]);
@@ -19,7 +21,7 @@ const Menusee = () => {
       const res = await axios.get("http://localhost:8000/api/removedishes");
       setDishes(res.data);
     } catch (error) {
-      toast.error("failed to fetch")
+      toast.error("Failed to fetch");
       console.error("Fetch Error:", error);
     }
   };
@@ -34,7 +36,7 @@ const Menusee = () => {
       fetchDishes();
     } catch (err) {
       console.error("Delete Error:", err);
-      toast.error("failed to delete")
+      toast.error("Failed to delete");
     }
   };
 
@@ -81,9 +83,8 @@ const Menusee = () => {
       setShowModal(false);
       fetchDishes();
     } catch (error) {
-      console.error("Update Error:", error)
-      toast.error("failed to update")
-      ;
+      console.error("Update Error:", error);
+      toast.error("Failed to update");
     }
   };
 
@@ -97,8 +98,15 @@ const Menusee = () => {
     setNewImageUrls([...newImageUrls, ""]);
   };
 
-  const handleFileChange = (e) => {
-    setNewFiles([...newFiles, ...e.target.files]);
+  const handleFileChange = (e, index) => {
+    const filesArray = Array.from(e.target.files);
+    const updatedFiles = [...newFiles];
+    updatedFiles[index] = filesArray;
+    setNewFiles(updatedFiles.flat());
+  };
+
+  const addMoreFileInputs = () => {
+    setFileInputs([...fileInputs, fileInputs.length]);
   };
 
   const removePreviewImage = (url) => {
@@ -107,6 +115,7 @@ const Menusee = () => {
 
   return (
     <div className="container py-4">
+      <ToastContainer />
       <h2 style={{ color: "#E1AD01" }}>📋 All Categories</h2>
       <div className="row">
         {dishes.map((dish) => (
@@ -224,16 +233,24 @@ const Menusee = () => {
                   ➕ Add More URLs
                 </button>
 
-                <h6>Add More Images from Device:</h6>
-                <input
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  className="form-control mb-2"
-                  onChange={handleFileChange}
-                />
+                <h6>Upload Images:</h6>
+                {fileInputs.map((inputId, idx) => (
+                  <input
+                    key={inputId}
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    className="form-control mb-2"
+                    onChange={(e) => handleFileChange(e, idx)}
+                  />
+                ))}
+                <button
+                  className="btn btn-outline-secondary btn-sm mb-3"
+                  onClick={addMoreFileInputs}
+                >
+                  ➕ Add More Files
+                </button>
               </div>
-
               <div className="modal-footer">
                 <button className="btn btn-secondary" onClick={() => setShowModal(false)}>
                   Cancel

@@ -10,6 +10,7 @@ const Productedit = () => {
   const [categories, setCategories] = useState([]);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+const [fileInputRefs, setFileInputRefs] = useState([React.createRef()]);
 
   useEffect(() => {
     axios.get("http://localhost:8000/api/dishes").then((res) => setCategories(res.data));
@@ -22,10 +23,12 @@ const Productedit = () => {
     updated[index] = value;
     setImageUrls(updated);
   };
-
   const addMoreUrlField = () => setImageUrls([...imageUrls, ""]);
 
-  const addMoreFileField = () => setFileInputs([...fileInputs, null]);
+const addMoreFileField = () => {
+  setFileInputs([...fileInputs, null]);
+  setFileInputRefs([...fileInputRefs, React.createRef()]);
+};
 
   const handleSingleFileChange = (e, index) => {
     const file = e.target.files[0];
@@ -65,12 +68,13 @@ const Productedit = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-
-      setSuccess("Product added successfully!");
+            setSuccess("Product added successfully!");
+ toast.success("Product added successfully!");
       setForm({ title: "", desc: "", price: "", category: "" });
       setImageUrls([""]);
       setFileInputs([null]);
       setSelectedFiles([]);
+
     } catch (err) {
       toast.error(err.response?.data?.error || "Failed to add product");
     }
@@ -132,6 +136,7 @@ const Productedit = () => {
             <input
               type="file"
               accept="image/*"
+                 ref={fileInputRefs[idx]} 
               className="form-control me-2"
               onChange={(e) => handleSingleFileChange(e, idx)}
             />
@@ -152,6 +157,8 @@ const Productedit = () => {
           Add Product
         </button>
       </form>
+                <ToastContainer position="top-right" autoClose={3000} />
+      
     </div>
   );
 };

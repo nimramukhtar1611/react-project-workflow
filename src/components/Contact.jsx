@@ -18,7 +18,6 @@ const Contact = () => {
         if (res.data) setFormData(res.data);
       })
       .catch((err) => console.log(err),
-        toast.error("Failed to load contact info")
 
       )
   }, []);
@@ -31,8 +30,8 @@ const Contact = () => {
     e.preventDefault();
     axios
       .put("http://localhost:8000/api/contact/update", formData)
-      .then(() =>  toast.success("✅ Contact info updated!"))
-      .catch((err) => console.log(err), toast.error("❌ Failed to update contact info"));
+      .then(() =>  toast.success(" Contact info updated!"))
+      .catch((err) => console.log(err), );
   };
 
   return (

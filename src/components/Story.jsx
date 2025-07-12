@@ -1,100 +1,103 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Carousel } from "react-bootstrap";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import axios from 'axios';
 const Story = () => {
+  const [carouselImages, setCarouselImages] = useState([]);  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const res = await axios.get("http://localhost:8000/api/home");
+        setCarouselImages(res.data?.carouselImages || []);
+      } catch (err) {
+        console.error("Failed to fetch carousel images", err);
+      }
+    };
+
+    fetchImages();
+  }, []);
+
   return (
     <>
       {/* Hero Section */}
-<section className="position-relative" style={{minHeight: "100vh", overflow: "hidden" }}>
-  {/* Carousel Background */}
-  <div id="heroCarousel" className="carousel slide carousel-fade" data-bs-ride="carousel">
-  <div className="carousel-inner">
-  {[
-    "https://imgs.search.brave.com/kXVBKecEKuC7MDG2LDqh7mhJ0K92Penx-C1NcQHXfDY/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzA2LzM2LzMwLzI2/LzM2MF9GXzYzNjMw/MjYwOV9UYjFKdERU/UTR6YXdPMHViNkwy/Zkh6bHJXNTg2Zjl0/ci5qcGc",
-    "https://imgs.search.brave.com/JJRI54tWk20uapF6iLVPKo7Lc8ZJspK5fuT7NsFMA8E/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMTgy/MDMzNzA3L3Bob3Rv/L3NocmltcC1zY2Ft/cGkuanBnP3M9NjEy/eDYxMiZ3PTAmaz0y/MCZjPXNYQ3lBbVZP/SUc5ODY2Q0RiRGRn/eElfNDM4ZVYyUUhm/YWt3RHFxZ3hnekE9",
-    "https://imgs.search.brave.com/wnpMGzwvm0ESY-nqm43sDgHIrABOtXYHd294--TWvI0/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pMC53/cC5jb20vY2hlZXNl/c2NpZW50aXN0LmNv/bS93cC1jb250ZW50/L3VwbG9hZHMvMjAy/My8wNy9Qcm92b2xl/dGEuanBnP3Jlc2l6/ZT0xMDI0LDc2OCZz/c2w9MQ"
-  ].map((src, index) => (
-    <div className={`carousel-item ${index === 0 ? "active" : ""}`} key={index}>
-      <img
-        src={src}
-        className="d-block w-100"
-        style={{
-          objectFit: "cover",
-          height: "100vh",
-          filter: "brightness(0.4)",
-        }}
-        alt={`Slide ${index + 1}`}
-      />
-    </div>
-  ))}
-</div>
+     <section className="position-relative" style={{ minHeight: "100vh", overflow: "hidden" }}>
+        {/* Carousel Background */}
+        <Carousel fade controls={false} indicators={false} interval={5000} pause={false}>
+          {carouselImages.map((src, index) => (
+            <Carousel.Item key={index}>
+              <img
+                className="d-block w-100"
+                src={src}
+                alt={`Slide ${index + 1}`}
+                style={{
+                  height: "100vh",
+                  objectFit: "cover",
+                  filter: "brightness(0.4)",
+                }}
+              />
+            </Carousel.Item>
+          ))}
+        </Carousel>
 
-    </div>
-  {/* Overlay Text */}
-  <div className="position-absolute top-50 start-50 translate-middle text-center px-3" style={{ zIndex: 2 }}>
+        {/* Overlay Text */}
+        <div className="position-absolute top-50 start-50 translate-middle text-center px-3" style={{ zIndex: 2 }}>
+          <h1
+            className="fw-bold mb-3"
+            style={{
+              color: "#fff",
+              fontSize: "clamp(1.8rem, 5vw, 2.4rem)",
+              letterSpacing: "1px",
+              lineHeight: 1.2,
+              textShadow: "0 1px 10px rgba(60,60,60,0.09)",
+              fontFamily: "'Playfair Display', serif",
+            }}
+          >
+            Exquisite Dining Experience
+            <br className="d-none d-md-block" />
+            For Unforgettable Moments
+          </h1>
 
-    <h1
-      className="fw-bold mb-3"
-      style={{
-        color: "#fff",
-        fontSize: "clamp(1.8rem, 5vw, 2.4rem)",
-        letterSpacing: "1px",
-        lineHeight: 1.2,
-        textShadow: "0 1px 10px rgba(60,60,60,0.09)",
-        fontFamily: "'Playfair Display', serif",
-      }}
-    >
-      Exquisite Dining Experience
-      <br className="d-none d-md-block" />
-      For Unforgettable Moments
-    </h1>
+          <p
+            className="mx-auto mb-4"
+            style={{
+              color: "#efefef",
+              fontWeight: 400,
+              fontSize: "1.1rem",
+              maxWidth: "640px",
+              fontFamily: "'Poppins', sans-serif",
+            }}
+          >
+            Savor artfully crafted cuisine in an ambiance of refined elegance.
+            Our culinary masterpieces await your discovery.
+          </p>
 
-    <p
-      className="mx-auto mb-4"
-      style={{
-        color: "#efefef",
-        fontWeight: 400,
-        fontSize: "1.1rem",
-        maxWidth: "640px",
-        fontFamily: "'Poppins', sans-serif",
-      }}
-    >
-      Savor artfully crafted cuisine in an ambiance of refined elegance.
-      Our culinary masterpieces await your discovery.
-    </p>
+          <div className="d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
+            <button className="btn fw-semibold" style={{
+              background: "#E1AD01",
+              color: "#fff",
+              borderRadius: "25px",
+              padding: "12px 36px",
+              fontWeight: 600,
+              fontSize: "1rem",
+              border: "none",
+            }}>
+              Reserve a Table
+            </button>
 
-    <div className="d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
-      <button
-        className="btn fw-semibold"
-        style={{
-          background: "#E1AD01",
-          color: "#fff",
-          borderRadius: "25px",
-          padding: "12px 36px",
-          fontWeight: 600,
-          fontSize: "1rem",
-          border: "none",
-        }}
-      >
-        Reserve a Table
-      </button>
-
-      <button
-        className="btn fw-semibold"
-        style={{
-          background: "transparent",
-          color: "#fff",
-          border: "2px solid #fff",
-          borderRadius: "25px",
-          padding: "12px 36px",
-          fontWeight: 600,
-          fontSize: "1rem",
-        }}
-      >
-        Explore Menu
-      </button>
-    </div>
-  </div>
-</section>
-
+            <button className="btn fw-semibold" style={{
+              background: "transparent",
+              color: "#fff",
+              border: "2px solid #fff",
+              borderRadius: "25px",
+              padding: "12px 36px",
+              fontWeight: 600,
+              fontSize: "1rem",
+            }}>
+              Explore Menu
+            </button>
+          </div>
+        </div>
+      </section>
    {/* Story Section */} 
       <section className="pt-5" style={{ backgroundColor:"#f6f7fa" }}>
         <div className="container">

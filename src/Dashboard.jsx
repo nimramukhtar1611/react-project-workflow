@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Sidebar from './components/Sidebars';
 import Meta from './components/Meta';
 import Contact from "./components/Contact";
-
+import CarouselEdit from './components/CarouselEdit'
 const Dashboard = () => {
   const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -52,6 +52,7 @@ const Dashboard = () => {
         <Footeredit />
         <Meta />
         <Contact/>
+        <CarouselEdit/>
       </div>
     </div>
   );
