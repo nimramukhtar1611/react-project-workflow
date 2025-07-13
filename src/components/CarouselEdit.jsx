@@ -1,26 +1,41 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
+import 'react-toastify/dist/ReactToastify.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const CarouselEdit = () => {
-  const [imageUrls, setImageUrls] = useState([""]);
+  const [carouselImages, setCarouselImages] = useState([]);
+  const [showModal, setShowModal] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([null]);
-  const [fileInputs, setFileInputs] = useState([null]);
-  const [fileInputRefs, setFileInputRefs] = useState([React.createRef()]);
-  
+
+  const fetchCarousel = async () => {
+    try {
+      const res = await axios.get("http://localhost:8000/api/home");
+      if (res.data?.carouselImages) {
+        setCarouselImages(res.data.carouselImages);
+      }
+    } catch {
+      toast.error("Failed to load carousel");
+    }
+  };
 
   useEffect(() => {
-    axios.get("http://localhost:8000/api/home").then((res) => {
-      if (res.data?.carouselImages?.length) {
-        setImageUrls(res.data.carouselImages);
-      }
-    });
+    fetchCarousel();
   }, []);
 
-  const handleUrlChange = (idx, val) => {
-    const updated = [...imageUrls];
-    updated[idx] = val;
-    setImageUrls(updated);
+  const handleDelete = async (url) => {
+    try {
+      const res = await axios.put("http://localhost:8000/api/home/delete-image", {
+        imageUrl: url,
+      });
+      toast.success("Image deleted");
+      setCarouselImages(res.data.data);
+    } catch {
+      toast.error("Delete failed");
+    }
   };
 
   const handleFileChange = (e, idx) => {
@@ -32,94 +47,98 @@ const CarouselEdit = () => {
     }
   };
 
-  const addMoreUrl = () => setImageUrls([...imageUrls, ""]);
-  const addMoreFile = () => {
-    setFileInputs([...fileInputs, null]);
-      setFileInputRefs([...fileInputRefs, React.createRef()]);
-    
+  const addMoreFile = () => setSelectedFiles([...selectedFiles, null]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const validFiles = selectedFiles.filter((file) => file !== null);
+
+    if (validFiles.length === 0) {
+      toast.error("Please upload at least one image");
+      return;
+    }
+
+    const formData = new FormData();
+    validFiles.forEach((file) => {
+      formData.append("images", file);
+    });
+
+    try {
+      await axios.post("http://localhost:8000/api/home", formData, {
+  timeout: 60000 
+});
+      toast.success("Carousel updated!");
+      setShowModal(false);
+      setSelectedFiles([null]);
+      fetchCarousel();
+    } catch {
+      toast.error("Update failed!");
+    }
   };
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  const formData = new FormData();
-
-  imageUrls.forEach((url) => {
-    if (url.trim()) formData.append("imageUrls", url);
-  });
-
-  selectedFiles.forEach((file) => {
-    if (file) formData.append("images", file);
-  });
-
-  try {
-    await axios.post("http://localhost:8000/api/home", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    toast.success("Carousel updated!");
-
-    // ✅ Clear inputs and states
-    setImageUrls([""]);
-    setSelectedFiles([null]);
-    setFileInputs([null]);
-    fileInputRefs.forEach(ref => {
-      if (ref.current) ref.current.value = "";
-    });
-    setFileInputRefs([React.createRef()]);
-  } catch (err) {
-    toast.error("Update failed!");
-  }
-};
 
   return (
     <div className="container py-4">
-      <h2 style={{ color: "#E1AD01" }}> 🛠️ Update Carousel</h2>
-      <form onSubmit={handleSubmit}>
-        {/* Image URL Fields */}
-        <div className="mb-3">
-          <label className="form-label">Image URLs</label>
-          {imageUrls.map((url, idx) => (
-            <div key={idx} className="d-flex align-items-center mb-2">
-              <input
-                type="text"
-                className="form-control me-2"
-                value={url}
-                onChange={(e) => handleUrlChange(idx, e.target.value)}
-              />
-              {url && <img src={url} alt="preview" height={50} />}
+      <h2 style={{ color: "#E1AD01" }}>Edit Home Carousel</h2>
+
+      {/* View Existing Images with Delete */}
+      <div className="d-flex flex-wrap gap-4 mt-4 mb-4">
+        {carouselImages.map((img, idx) => (
+          <div key={idx} className="position-relative">
+            <img src={img} alt="carousel" height={100} className="rounded" />
+            <button
+              onClick={() => handleDelete(img)}
+              className="btn btn-sm btn-danger position-absolute top-0 end-0"
+              style={{ transform: "translate(50%, -50%)" }}
+            >
+              ❌
+            </button>
+          </div>
+        ))}
+      </div>
+
+      <Button
+        style={{ backgroundColor: "#E1AD01", borderColor: "#E1AD01", color: "#000" }}
+        onClick={() => setShowModal(true)}
+      >
+        Edit / Add Images
+      </Button>
+
+      {/* Modal for Adding Images */}
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>🖼️ Edit Carousel</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label>Upload Files</label>
+              {selectedFiles.map((file, idx) => (
+                <div key={idx} className="d-flex align-items-center mb-2">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="form-control me-2"
+                    onChange={(e) => handleFileChange(e, idx)}
+                  />
+                  {file instanceof File && (
+                    <img src={URL.createObjectURL(file)} height={50} alt="preview" />
+                  )}
+                </div>
+              ))}
+              <button
+                type="button"
+                className="btn btn-outline-secondary btn-sm"
+                onClick={addMoreFile}
+              >
+                ➕ Add More Files
+              </button>
             </div>
-          ))}
-          <button type="button" className="btn btn-outline-secondary btn-sm mt-2" onClick={addMoreUrl}>
-            ➕ Add More URLs
-          </button>
-        </div>
 
-        {/* File Upload Fields */}
-        <div className="mb-3">
-          <label className="form-label">Upload Images</label>
-          {fileInputs.map((_, idx) => (
-            <div key={idx} className="d-flex align-items-center mb-2">
-              <input
-                type="file"
-                                 ref={fileInputRefs[idx]} 
+            <button className="btn btn-warning w-100">💾 Save Changes</button>
+          </form>
+        </Modal.Body>
+      </Modal>
 
-                className="form-control me-2"
-                accept="image/*"
-                onChange={(e) => handleFileChange(e, idx)}
-              />
-              {selectedFiles[idx] && (
-                <img src={URL.createObjectURL(selectedFiles[idx])} height={50} alt="preview" />
-              )}
-            </div>
-          ))}
-          <button type="button" className="btn btn-outline-secondary btn-sm mt-2" onClick={addMoreFile}>
-            ➕ Add More Files
-          </button>
-        </div>
-
-        <button className="btn" style={{ background: "#E1AD01", color: "#000" }}>
-          Save Carousel
-        </button>
-      </form>
       <ToastContainer />
     </div>
   );

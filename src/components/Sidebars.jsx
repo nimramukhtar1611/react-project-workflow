@@ -9,12 +9,11 @@ const sidebarOptions = [
   { name: "View Products", icon: "\ud83d\udce6", path: "/Viewproduct" },
 ];
 
-const Sidebar = ({ active }) => {
+const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const history = useHistory();
-    const location = useLocation(); 
-
+  const location = useLocation();
 
   const toggleSidebar = () => setIsOpen((prev) => !prev);
 
@@ -23,6 +22,11 @@ const Sidebar = ({ active }) => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+  useEffect(() => {
+    if (isMobile) {
+      document.body.style.overflow = isOpen ? "hidden" : "auto";
+    }
+  }, [isOpen, isMobile]);
 
   const handleNavigation = (path) => {
     history.push(path);
@@ -68,14 +72,14 @@ const Sidebar = ({ active }) => {
           }
 
           .sidebar-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: rgba(0,0,0,0.4);
-            z-index: 1000;
-          }
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.4);
+  z-index: 1000;
+}
 
           .no-scrollbar::-webkit-scrollbar {
             display: none;
@@ -84,6 +88,33 @@ const Sidebar = ({ active }) => {
             -ms-overflow-style: none;
             scrollbar-width: none;
           }
+             @media (max-width: 768px) {
+      .sidebar-option-animate {
+        font-size: 0.9rem !important;
+        padding: 10px 16px !important;
+      }
+
+      .sidebar-option-animate span:first-child {
+        font-size: 1rem !important; /* icon size */
+      }
+
+      .sidebar-option-animate span:last-child {
+        font-size: 0.9rem !important; /* text size */
+      }
+
+      .sidebar-overlay {
+        background-color: rgba(0, 0, 0, 0.3);
+      }
+
+      .hamburger {
+        font-size: 1.5rem !important;
+        padding: 3px 8px !important;
+      }
+
+      .sidebar-title h2 {
+        font-size: 1.2rem !important;
+      }
+    }
         `}
       </style>
 
@@ -96,18 +127,18 @@ const Sidebar = ({ active }) => {
       )}
 
       <div
-        className={`no-scrollbar`}
+        className="no-scrollbar"
         style={{
-          position: isMobile ? "absolute" : "fixed",
-          top: 0,
-          left: 0,
-          height: "100vh",
-          width: isMobile ? "70vw" : "50%",
+        position: isMobile ? "fixed" : "fixed",
+top: 0,
+left: 0,
+height: isMobile ? "60vh" : "100vh",
+width: isMobile ? "100vw" : "50%",
           maxWidth: "300px",
-          background: isMobile ? "#dcdcdc" : "#222", 
-          color: "#fff",
+          background: isMobile ? "#f4f4f4" : "#222",
+          color: isMobile ? "#222" : "#fff",
           zIndex: 1051,
-          transform: isMobile && !isOpen ? "translateX(-100%)" : "translateX(0)",
+transform: isMobile && !isOpen ? "translateY(-100%)" : "translateY(0)",
           transition: "transform 0.3s ease-in-out",
           padding: "60px 0 30px",
           borderRight: "2px solid #E1AD01",
@@ -127,37 +158,71 @@ const Sidebar = ({ active }) => {
         >
           <h2 style={{ margin: 0 }}>Admin Panel</h2>
         </div>
+{isMobile && (
+  <button
+    onClick={toggleSidebar}
+    style={{
+      position: "absolute",
+      top: "10px",
+      right: "15px",
+      background: "transparent",
+      border: "none",
+      fontSize: "1.5rem",
+      color: "#E1AD01",
+      cursor: "pointer",
+    }}
+  >
+    ✖
+  </button>
+)}
 
         <ul style={{ listStyle: "none", padding: 0, width: "100%" }}>
           {sidebarOptions.map((option) => (
             <li key={option.name}>
-          <button
-  className="sidebar-option-animate"
-  style={{
-    background: location.pathname === option.path ? "#dcdcdc" : "transparent",
-    color: location.pathname === option.path ? "#000" : "#fff",
-    fontWeight: location.pathname === option.path ? "bold" : "normal",
-    width: "100%",
-    textAlign: "left",
-    padding: "12px 30px",
-    fontSize: "1.1rem",
-    marginBottom: "10px",
-    cursor: "pointer",
-    fontFamily: "'Poppins', sans-serif",
-    borderRadius: "6px",
-    display: "flex",
-    alignItems: "center",
-    gap: "10px",
-    boxShadow: location.pathname === option.path ? "0 2px 10px rgba(0,0,0,0.1)" : "none",
-  }}
-  onClick={() => handleNavigation(option.path)}
->
-  <span style={{ fontSize: "1.3rem" }}>{option.icon}</span>
-  <span>{option.name}</span>
-</button>
-
-
-
+              <button
+                className={`sidebar-option-animate ${
+                  location.pathname === option.path ? "sidebar-option-active" : ""
+                }`}
+                style={{
+                  background: isMobile
+                    ? location.pathname === option.path
+                      ? "#e0e0e0"
+                      : "#fff"
+                    : location.pathname === option.path
+                    ? "#333"
+                    : "transparent",
+                  color: isMobile
+                    ? location.pathname === option.path
+                      ? "#000"
+                      : "#333"
+                    : location.pathname === option.path
+                    ? "#E1AD01"
+                    : "#fff",
+                  fontWeight: location.pathname === option.path ? "bold" : "normal",
+                  width: "100%",
+                  textAlign: "left",
+                  padding: isMobile ? "14px 20px" : "12px 30px",
+                  fontSize: isMobile ? "1rem" : "1.1rem",
+                  marginBottom: isMobile ? "8px" : "10px",
+                  cursor: "pointer",
+                  fontFamily: "'Poppins', sans-serif",
+                  borderRadius: "6px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: isMobile ? "8px" : "10px",
+                  boxShadow:
+                    location.pathname === option.path
+                      ? "0 2px 8px rgba(0,0,0,0.05)"
+                      : "none",
+                  transition: "all 0.2s ease-in-out",
+                }}
+                onClick={() => handleNavigation(option.path)}
+              >
+                <span style={{ fontSize: isMobile ? "1.1rem" : "1.3rem" }}>
+                  {option.icon}
+                </span>
+                <span>{option.name}</span>
+              </button>
             </li>
           ))}
         </ul>

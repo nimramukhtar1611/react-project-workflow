@@ -9,16 +9,21 @@ function Footer() {
   const [footer, setFooter] = useState(null);
   const [contact, setContact] = useState(null);
 
-  useEffect(() => {
-    axios.get("http://localhost:8000/api/footer")
-      .then((res) => setFooter(res.data))
-      .catch((err) => console.log(err),toast.error("Failed to load footer info")
-);
+ useEffect(() => {
+  axios.get("http://localhost:8000/api/footer")
+    .then((res) => setFooter(res.data))
+    .catch((err) => {
+      console.log(err);
+      toast.error("Failed to load footer info");
+    });
 
-    axios.get("http://localhost:8000/api/contact")
-      .then((res) => setContact(res.data))
-      .catch((err) => console.log(err),toast.error("Failed to load footer info"));
-  }, []);
+  axios.get("http://localhost:8000/api/contact")
+    .then((res) => setContact(res.data))
+    .catch((err) => {
+      console.log(err);
+      toast.error("Failed to load contact info");
+    });
+}, []);
 
   if (!footer?.socialLinks) return null;
 

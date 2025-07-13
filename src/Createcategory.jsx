@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from './components/Sidebars'
+import { ToastContainer } from "react-toastify";
 import Meta from './components/Meta'
 import Menuedit from './components/Menuedit'
 const Createcategory = () => {
@@ -39,8 +40,8 @@ const Createcategory = () => {
           paddingTop:"35px"
         }}
       >
-<Meta/>
         <Menuedit />
+                                  <ToastContainer position="top-right" autoClose={3000} />
         
       </div>
     </div>

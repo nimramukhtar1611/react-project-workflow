@@ -2,13 +2,20 @@ import React, { useState, useContext, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import AppContext from "./components/context/appContext";
+import { useHistory } from "react-router-dom";
 
 const CheckoutPage = () => {
   const { cartItem ,clearCart} = useContext(AppContext);
   const product = cartItem?.product;
   const quantity = cartItem?.quantity || 1;
-
+  const history = useHistory();
+   useEffect(() => {
+    if (!product || !product.title || !product.price || !quantity) {
+      history.push("/");
+    }
+  }, [product, quantity, history]);
   const location = useLocation();
+  
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -27,6 +34,7 @@ const CheckoutPage = () => {
       </div>
     );
   }
+
 
   const numericPrice = parseFloat(String(product.price).replace(/[^0-9.]/g, ""));
   const total = numericPrice * quantity;

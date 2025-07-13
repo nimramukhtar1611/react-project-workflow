@@ -1,6 +1,7 @@
  import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { Carousel } from 'react-bootstrap'; 
+import ProductDetail from "./ProductDetail";
 import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
@@ -40,12 +41,13 @@ const CustomCarousel = ({ images }) => {
 };
 
 const CategoryPage = () => {
-  const history = useHistory(); // ✅ Using useHistory for React Router v5
+  const history = useHistory(); 
   const { title } = useParams();
   const [category, setCategory] = useState(null);
   const [products, setProducts] = useState([]);
   const [selectedProductImages, setSelectedProductImages] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
     axios.get("http://localhost:8000/api/dishes").then((res) => {
@@ -251,10 +253,16 @@ const CategoryPage = () => {
                     e.target.style.color = "#E1AD01";
                     e.target.style.boxShadow = "none";
                   }}
-                  onClick={() => history.push(`/product/${product._id}`)}
-                >
+ onClick={() => setSelectedProduct(product)}                >
                   Add To Cart
                 </button>
+                {selectedProduct && (
+  <ProductDetail 
+    product={selectedProduct} 
+    onClose={() => setSelectedProduct(null)} 
+  />
+)}
+
               </div>
             </div>
           ))}

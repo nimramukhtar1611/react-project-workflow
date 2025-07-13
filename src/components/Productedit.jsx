@@ -10,6 +10,8 @@ const Productedit = () => {
   const [categories, setCategories] = useState([]);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+  
 const [fileInputRefs, setFileInputRefs] = useState([React.createRef()]);
 
   useEffect(() => {
@@ -39,46 +41,73 @@ const addMoreFileField = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSuccess("");
-    setError("");
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setSuccess("");
+  setError("");
+ setLoading(true);
+  if (!form.title.trim()) {
+    toast.error("Title is required!");
+    return;
+  }
+  if (!form.desc.trim()) {
+    toast.error("Description is required!");
+    return;
+  }
+  if (!form.price.trim()) {
+    toast.error("Price is required!");
+    return;
+  }
+  if (!form.category.trim()) {
+    toast.error("Category is required!");
+    return;
+  }
 
-    const formData = new FormData();
-    formData.append("title", form.title);
-    formData.append("desc", form.desc);
-    formData.append("price", form.price);
-    formData.append("category", form.category);
+  const hasValidImageUrl = imageUrls.some((url) => url.trim() !== "");
+  const hasSelectedFile = selectedFiles.some((file) => file);
 
-    imageUrls.forEach((url) => {
-      if (url.trim()) {
-        formData.append("imageUrls", url);
-      }
-    });
+  if (!hasValidImageUrl && !hasSelectedFile) {
+    toast.error("At least one image (URL or file) is required!");
+    return;
+  }
 
-    selectedFiles.forEach((file) => {
-      if (file) {
-        formData.append("images", file);
-      }
-    });
+  const formData = new FormData();
+  formData.append("title", form.title);
+  formData.append("desc", form.desc);
+  formData.append("price", form.price);
+  formData.append("category", form.category);
 
-    try {
-      await axios.post("http://localhost:8000/api/products", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-            setSuccess("Product added successfully!");
- toast.success("Product added successfully!");
-      setForm({ title: "", desc: "", price: "", category: "" });
-      setImageUrls([""]);
-      setFileInputs([null]);
-      setSelectedFiles([]);
-
-    } catch (err) {
-      toast.error(err.response?.data?.error || "Failed to add product");
+  imageUrls.forEach((url) => {
+    if (url.trim()) {
+      formData.append("imageUrls", url);
     }
-  };
+  });
+
+  selectedFiles.forEach((file) => {
+    if (file) {
+      formData.append("images", file);
+    }
+  });
+
+  try {
+    await axios.post("http://localhost:8000/api/products", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    toast.success("Product added successfully!");
+    setForm({ title: "", desc: "", price: "", category: "" });
+    setImageUrls([""]);
+    setFileInputs([null]);
+    setSelectedFiles([]);
+  } catch (err) {
+    toast.error(err.response?.data?.error || "Failed to add product");
+  }finally {
+      setLoading(false); }
+};
+
+
 
   return (
     <div className="container py-4">
@@ -105,30 +134,6 @@ const addMoreFileField = () => {
           ))}
         </select>
 
-        {/* URL Inputs */}
-        <label className="form-label">Image URLs</label>
-        {imageUrls.map((url, idx) => (
-          <div key={idx} className="d-flex align-items-center mb-2">
-            <input
-              type="text"
-              className="form-control me-2"
-              value={url}
-              onChange={(e) => handleUrlChange(idx, e.target.value)}
-              placeholder="Paste image URL"
-            />
-            {url && (
-              <img
-                src={url}
-                alt="Preview"
-                style={{ height: 60, width: 60, objectFit: "cover", borderRadius: 5 }}
-              />
-            )}
-          </div>
-        ))}
-        <button type="button" onClick={addMoreUrlField} className="btn btn-outline-secondary btn-sm mb-3">
-          ➕ Add More URLs
-        </button>
-<br />
         {/* File Uploads */}
         <label className="form-label">Upload Images from Device</label>
         {fileInputs.map((_, idx) => (
@@ -153,14 +158,24 @@ const addMoreFileField = () => {
           ➕ Add More Images
         </button>
 
-        <button type="submit" className="btn w-100" style={{ backgroundColor: "#E1AD01", color: "#000" }}>
-          Add Product
-        </button>
+        {loading ? (
+              <div className="text-center my-3">
+                <div className="spinner-border text-warning" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            ) : (
+              <button
+                type="submit"
+                className="btn w-100"
+                style={{ backgroundColor: "#E1AD01", color: "#000" }}
+              >
+                Add Product
+              </button>  )}
       </form>
                 <ToastContainer position="top-right" autoClose={3000} />
       
     </div>
   );
-};
-
+}
 export default Productedit;

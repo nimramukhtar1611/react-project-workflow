@@ -23,6 +23,8 @@ const Footeredit = () => {
   const [original, setOriginal] = useState(defaultFooter);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
 
   useEffect(() => {
     axios
@@ -83,6 +85,7 @@ const Footeredit = () => {
     e.preventDefault();
     setMessage("");
     setError("");
+      setLoading(true);
     try {
       const res = await axios.put(
         "http://localhost:8000/api/footer",
@@ -93,7 +96,9 @@ const Footeredit = () => {
       toast.success("Footer updated successfully!");
     } catch (err) {
     toast.error  ("Failed to update. Please try again.");
-    }
+    }finally {
+    setLoading(false); 
+  }
   };
 
   if (!form) return null;
@@ -225,13 +230,22 @@ const Footeredit = () => {
                 ))}
               </div>
             </div>
-            <button
-              type="submit"
-              className="btn w-100"
-              style={{ backgroundColor: "#E1AD01", color: "#000" }}
-            >
-              Update Footer
-            </button>
+           {loading ? (
+  <div className="text-center my-3">
+    <div className="spinner-border text-warning" role="status">
+      <span className="visually-hidden">Loading...</span>
+    </div>
+  </div>
+) : (
+  <button
+    type="submit"
+    className="btn w-100"
+    style={{ backgroundColor: "#E1AD01", color: "#000" }}
+  >
+    Update Footer
+  </button>
+)}
+
           </form>
         </div>
       </div>

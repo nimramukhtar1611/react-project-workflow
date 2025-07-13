@@ -41,7 +41,7 @@ const Productsee = () => {
     setNewTitle(product.title);
     setNewDesc(product.desc);
     setNewPrice(product.price);
-    setPreviewImages(product.images || []);
+    setPreviewImages(Array.isArray(product.images) ? product.images : []);
     setImageUrls([""]);
     setImageFiles([]);
     setFileInputs([0]);
@@ -166,12 +166,7 @@ const Productsee = () => {
                   ))}
                 </div>
 
-                <h6>Add Image URLs:</h6>
-                {imageUrls.map((url, idx) => (
-                  <input key={idx} type="text" className="form-control mb-2" placeholder="Paste image URL" value={url} onChange={(e) => handleUrlChange(idx, e.target.value)} />
-                ))}
-                <button className="btn btn-outline-secondary btn-sm mb-3" onClick={addMoreUrl}>➕ Add More URLs</button>
-
+             
                 <h6>Upload Images:</h6>
                 {fileInputs.map((inputId, idx) => (
                   <input

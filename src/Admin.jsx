@@ -1,45 +1,55 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useHistory } from "react-router-dom"; 
-import { toast } from "react-toastify";
+import { useHistory } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Admin() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const history = useHistory();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       const res = await axios.post("http://localhost:8000/api/auth/login", {
         username,
         password,
       });
+
       if (res.data.success) {
         localStorage.setItem("isAuthenticated", "true");
-        history.push("/dashboard");
+        toast.success("Login successful! Redirecting...");
+        setTimeout(() => {
+          history.push("/dashboard");
+        }, 1500); // wait 1.5 seconds before redirecting
       } else {
-        toast.error("Invalid Credentials");
+        toast.error("Invalid credentials");
       }
-    } catch (err) {
-  if (err.response && err.response.data && err.response.data.msg) {
-     toast.error(err.response.data.msg);
-  } else {
-     toast.error("Error Occurred");
-  }
-}
 
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.msg) {
+        toast.error(err.response.data.msg);
+      } else {
+        toast.error("Something went wrong!");
+      }
+    }
   };
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100" style={{ backgroundColor: "#fff" }}>
       <form
         onSubmit={handleSubmit}
-        style={{ width: "400px", padding: "30px", backgroundColor: "#dcdcdc", borderRadius: "12px" }}
+        style={{
+          width: "400px",
+          padding: "30px",
+          backgroundColor: "#dcdcdc",
+          borderRadius: "12px",
+        }}
       >
         <h3 className="text-center mb-4" style={{ color: "#E1AD01" }}>Admin Login</h3>
-        {error && <div className="alert alert-danger">{error}</div>}
+
         <input
           type="text"
           className="form-control mb-3"
@@ -56,12 +66,20 @@ function Admin() {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <button type="submit" className="btn w-100" style={{ backgroundColor: "#E1AD01", color: "white" }}>
+        <button
+          type="submit"
+          className="btn w-100"
+          style={{ backgroundColor: "#E1AD01", color: "white" }}
+        >
           Login
         </button>
       </form>
+
+      {/* Toast notifications container */}
+      <ToastContainer position="top-center" autoClose={2000} />
     </div>
   );
 }
 
 export default Admin;
+

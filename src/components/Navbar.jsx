@@ -32,9 +32,9 @@ const Navbar = () => {
   useEffect(() => {
     const updateSidebarWidth = () => {
       if (window.innerWidth <= 480) {
-        setSidebarWidth("100%");
+        setSidebarWidth("100vw");
       } else if (window.innerWidth <= 768) {
-        setSidebarWidth("80%");
+        setSidebarWidth("80vw");
       } else {
         setSidebarWidth("300px");
       }
@@ -45,12 +45,11 @@ const Navbar = () => {
       updateSidebarWidth();
     };
 
-    handleResize(); // Call on mount
+    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Fetch categories
   useEffect(() => {
     axios.get('http://localhost:8000/api/dishes')
       .then((res) => {
@@ -63,8 +62,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav
-      className="navbar navbar-expand-lg navbar-light px-lg-5 px-2 py-3"
+    <nav className="navbar navbar-expand-lg navbar-light px-lg-5 px-2 py-3"
       style={{ backgroundColor: isSmallDevice ? '#dcdcdc' : '#222' }}
     >
       <Link
@@ -78,7 +76,7 @@ const Navbar = () => {
       >
         AURUM
       </Link>
-<div> <button
+<div>   <button
         className="navbar-toggler d-lg-none"
         type="button"
         style={{ backgroundColor: "#dcdcdc" }}
@@ -86,14 +84,10 @@ const Navbar = () => {
       >
         <span className="navbar-toggler-icon"></span>
       </button></div>
-      {/* Toggler button for small screens */}
-     
+   
 
       {/* Collapsible navbar */}
-      <div
-        className={`collapse navbar-collapse justify-content-between ${isNavOpen ? 'show' : ''}`}
-        id="navbarNav"
-      >
+      <div className={`collapse navbar-collapse justify-content-between ${isNavOpen ? 'show' : ''}`} id="navbarNav">
         <ul className="navbar-nav mx-auto">
           {navItems.map((item, index) => (
             <li className="nav-item" key={index}>
@@ -143,20 +137,23 @@ const Navbar = () => {
 
         {/* Cart Button + Sidebar */}
         <div>
-          <button
-            className="btn px-3 py-2"
-            style={{
-              background: "transparent",
-              border: "none",
-              fontSize: "1.5rem",
-              color: "#E1AD01",
-              position: "relative",
-              cursor: "pointer",
-            }}
-            onClick={toggleSidebar}
-          >
-            🛒
-          </button>
+        <button
+  className="btn px-3 py-2 d-flex align-items-center justify-content-center"
+  style={{
+    background: "transparent",
+    border: "none",
+    fontSize: "1.5rem",
+    color: "#E1AD01",
+    position: "relative",
+    cursor: "pointer",
+    width: "48px",
+    height: "48px",
+  }}
+  onClick={toggleSidebar}
+>
+  🛒
+</button>
+
 
           {/* Overlay */}
           {isSidebarOpen && (
@@ -185,7 +182,7 @@ const Navbar = () => {
               backgroundColor: "#fff",
               boxShadow: "-2px 0 10px rgba(0,0,0,0.3)",
               padding: "20px",
-              zIndex: 1000,
+              zIndex: 1050,
               transition: "right 0.3s ease-in-out",
               borderTopLeftRadius: "10px",
               borderBottomLeftRadius: "10px",

@@ -11,9 +11,16 @@ export const AppProvider = ({ children }) => {
  const clearCart = () => {
     setCartItem(null); // 🧹 This clears the cart
   };
+const removeFromCart = (productId) => {
+  setCartItem(prev => {
+    if (!prev || !prev.product) return null;
+    return prev.product._id === productId ? null : prev;
+  });
+};
+
 
   return (
-    <AppContext.Provider value={{ cartItem, updateCart ,clearCart}}>
+    <AppContext.Provider value={{ cartItem, updateCart ,clearCart,removeFromCart}}>
       {children}
     </AppContext.Provider>
   );

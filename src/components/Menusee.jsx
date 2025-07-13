@@ -45,7 +45,7 @@ const Menusee = () => {
     setNewTitle(dish.title);
     setNewDesc(dish.desc);
     setNewPrice(dish.price);
-    setPreviewImages(dish.images || []);
+  setPreviewImages(Array.isArray(dish.images) ? dish.images : []);
     setNewImageUrls([""]);
     setNewFiles([]);
     setShowModal(true);
@@ -191,47 +191,34 @@ const Menusee = () => {
                   onChange={(e) => setNewPrice(e.target.value)}
                 />
 
-                <h6>Current Images:</h6>
-                <div className="d-flex flex-wrap mb-3">
-                  {previewImages.map((img, idx) => (
-                    <div key={idx} className="position-relative me-2 mb-2">
-                      <img
-                        src={img}
-                        alt="preview"
-                        style={{
-                          height: 70,
-                          width: 70,
-                          objectFit: "cover",
-                          borderRadius: 5,
-                        }}
-                      />
-                      <button
-                        className="btn btn-sm btn-danger position-absolute top-0 end-0"
-                        onClick={() => removePreviewImage(img)}
-                      >
-                        ❌
-                      </button>
-                    </div>
-                  ))}
-                </div>
+              <h6>Current Images:</h6>
+<div className="d-flex flex-wrap mb-3">
+  {previewImages && previewImages.length > 0 ? (
+    previewImages.map((img, idx) => (
+      <div key={idx} className="position-relative me-2 mb-2">
+        <img
+          src={img}
+          alt={`preview-${idx}`}
+          style={{
+            height: 70,
+            width: 70,
+            objectFit: "cover",
+            borderRadius: 5,
+          }}
+        />
+        <button
+          className="btn btn-sm btn-danger position-absolute top-0 end-0"
+          onClick={() => removePreviewImage(img)}
+        >
+          ❌
+        </button>
+      </div>
+    ))
+  ) : (
+    <p className="text-muted">No current images</p>
+  )}
+</div>
 
-                <h6>Add More Image URLs:</h6>
-                {newImageUrls.map((url, idx) => (
-                  <input
-                    key={idx}
-                    type="text"
-                    className="form-control mb-2"
-                    value={url}
-                    placeholder="Paste image URL"
-                    onChange={(e) => handleUrlChange(idx, e.target.value)}
-                  />
-                ))}
-                <button
-                  className="btn btn-outline-secondary btn-sm mb-3"
-                  onClick={addMoreUrl}
-                >
-                  ➕ Add More URLs
-                </button>
 
                 <h6>Upload Images:</h6>
                 {fileInputs.map((inputId, idx) => (

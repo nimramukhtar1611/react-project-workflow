@@ -39,7 +39,6 @@ const Createproduct = () => {
           paddingTop:"35px"
         }}
       >
-<Meta/>
         <Productedit />
         
       </div>
