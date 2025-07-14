@@ -15,6 +15,8 @@ const Menusee = () => {
   const [newFiles, setNewFiles] = useState([]);
   const [previewImages, setPreviewImages] = useState([]);
   const [showModal, setShowModal] = useState(false);
+const [showDeleteModal, setShowDeleteModal] = useState(false);
+const [selectedDeleteId, setSelectedDeleteId] = useState(null);
 
   const fetchDishes = async () => {
     try {
@@ -145,13 +147,54 @@ const Menusee = () => {
                   >
                     ✏️
                   </button>
-                  <button
-                    className="btn btn-sm btn-outline-danger"
-                    onClick={() => handleDelete(dish._id)}
-                  >
-                    🗑️
-                  </button>
+                 <button
+  className="btn btn-sm btn-outline-danger"
+  onClick={() => {
+    setSelectedDeleteId(dish._id);
+    setShowDeleteModal(true);
+  }}
+>
+  🗑️
+</button>
+
                 </div>
+                {showDeleteModal && (
+  <div className="modal show d-block" tabIndex="-1">
+    <div className="modal-dialog">
+      <div className="modal-content">
+        <div className="modal-header bg-danger text-white">
+          <h5 className="modal-title">Confirm Delete</h5>
+          <button
+            type="button"
+            className="btn-close btn-close-white"
+            onClick={() => setShowDeleteModal(false)}
+          ></button>
+        </div>
+        <div className="modal-body">
+          <p>Are you sure you want to delete this product?</p>
+        </div>
+        <div className="modal-footer">
+          <button
+            className="btn btn-secondary"
+            onClick={() => setShowDeleteModal(false)}
+          >
+            Cancel
+          </button>
+          <button
+            className="btn btn-danger"
+            onClick={async () => {
+              await handleDelete(selectedDeleteId);
+              setShowDeleteModal(false);
+            }}
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
               </div>
             </div>
           </div>

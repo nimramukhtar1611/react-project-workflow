@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 
 const Productsee = () => {
   const [products, setProducts] = useState([]);
+  const [productToDelete, setProductToDelete] = useState(null);
   const [editProduct, setEditProduct] = useState(null);
   const [newTitle, setNewTitle] = useState("");
   const [newDesc, setNewDesc] = useState("");
@@ -27,14 +28,17 @@ const Productsee = () => {
     fetchProducts();
   }, []);
 
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`http://localhost:8000/api/removeproduct/${id}`);
-      fetchProducts();
-    } catch {
-      toast.error("Failed to delete product");
-    }
-  };
+ const confirmDelete = async () => {
+  try {
+    await axios.delete(`http://localhost:8000/api/removeproduct/${productToDelete._id}`);
+    setProductToDelete(null);
+    fetchProducts();
+    toast.success("Product deleted");
+  } catch {
+    toast.error("Failed to delete product");
+  }
+};
+
 
   const handleEdit = (product) => {
     setEditProduct(product);
@@ -134,8 +138,36 @@ const Productsee = () => {
               </div>
               <div className="card-footer d-flex justify-content-between">
                 <button className="btn btn-sm btn-warning" onClick={() => handleEdit(product)}>✏️ Edit</button>
-                <button className="btn btn-sm btn-danger" onClick={() => handleDelete(product._id)}>🗑️ Delete</button>
-              </div>
+<button
+  className="btn btn-sm btn-danger"
+  onClick={() => setProductToDelete(product)}
+>
+  🗑️ Delete
+</button></div>
+
+{productToDelete && (
+  <div className="modal show d-block" >
+    <div className="modal-dialog">
+      <div className="modal-content">
+        <div className="modal-header bg-danger text-white">
+          <h5 className="modal-title">Confirm Delete</h5>
+          <button className="btn-close" onClick={() => setProductToDelete(null)} />
+        </div>
+        <div className="modal-body">
+          <p>Are you sure you want to delete <strong>{productToDelete.title}</strong>?</p>
+        </div>
+        <div className="modal-footer">
+          <button className="btn btn-secondary" onClick={() => setProductToDelete(null)}>
+            Cancel
+          </button>
+          <button className="btn btn-danger" onClick={confirmDelete}>
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
             </div>
           </div>
         ))}
