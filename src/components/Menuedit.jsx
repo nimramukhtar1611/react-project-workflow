@@ -44,14 +44,12 @@ const handleSubmit = async (e) => {
   e.preventDefault();
   setSuccess("");
   setError("");
- setLoading(true);
-  // Validation: Check for required fields
- if (!form.title.trim()) {
-  console.log("Missing Title");
-  toast.error("Title is required!");
-  return;
-}
 
+  // Validation: Check for required fields
+  if (!form.title.trim()) {
+    toast.error("Title is required!");
+    return;
+  }
 
   if (!form.desc.trim()) {
     toast.error("Description is required!");
@@ -67,9 +65,11 @@ const handleSubmit = async (e) => {
   const hasSelectedFile = selectedFiles.some((file) => file);
 
   if (!hasValidImageUrl && !hasSelectedFile) {
-    toast.error("At least one image (URL or file) is required!");
+    toast.error("At least one image is required!");
     return;
   }
+
+  setLoading(true); 
 
   const formData = new FormData();
   formData.append("title", form.title);
@@ -102,8 +102,9 @@ const handleSubmit = async (e) => {
     setSelectedFiles([]);
   } catch (err) {
     toast.error(err.response?.data?.error || "Failed to add category");
-  }finally {
-      setLoading(false); }
+  } finally {
+    setLoading(false);
+  }
 };
 
   return (

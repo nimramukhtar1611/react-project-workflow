@@ -146,24 +146,25 @@ const [selectedProduct, setSelectedProduct] = useState(null);
           </div>
         )}
 
-        <div
-          className="position-absolute top-50 start-50 translate-middle text-center px-3"
-          style={{ zIndex: 2 }}
-        >
-          <h1
-            className="fw-bold mb-3"
-            style={{
-              color: "#fff",
-              fontSize: "clamp(5.8rem, 5vw, 10.4rem)",
-              letterSpacing: "2px",
-              lineHeight: 1.2,
-              textShadow: "0 1px 10px rgba(60,60,60,0.09)",
-              fontFamily: "'Playfair Display', serif",
-            }}
-          >
-            {category.title}
-          </h1>
-        </div>
+       <div
+  className="position-absolute top-50 start-50 translate-middle text-center px-2 px-sm-3"
+  style={{ zIndex: 2 }}
+>
+  <h1
+    className="fw-bold mb-3"
+    style={{
+      color: "#fff",
+      fontSize: "clamp(2.5rem, 8vw, 6rem)", 
+      letterSpacing: "1.5px",
+      lineHeight: 1.2,
+      textShadow: "0 1px 10px rgba(60,60,60,0.09)",
+      fontFamily: "'Playfair Display', serif",
+    }}
+  >
+    {category.title}
+  </h1>
+</div>
+
       </section>
 
       {/* Product Cards */}

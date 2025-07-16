@@ -7,6 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 const Menusee = () => {
   const [dishes, setDishes] = useState([]);
   const [editDish, setEditDish] = useState(null);
+  const [loadingUpdate, setLoadingUpdate] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newDesc, setNewDesc] = useState("");
   const [newPrice, setNewPrice] = useState("");
@@ -53,42 +54,46 @@ const [selectedDeleteId, setSelectedDeleteId] = useState(null);
     setShowModal(true);
   };
 
-  const handleUpdate = async () => {
-    try {
-      const formData = new FormData();
-      formData.append("title", newTitle);
-      formData.append("desc", newDesc);
-      formData.append("price", newPrice);
+const handleUpdate = async () => {
+  setLoadingUpdate(true);
+  try {
+    const formData = new FormData();
+    formData.append("title", newTitle);
+    formData.append("desc", newDesc);
+    formData.append("price", newPrice);
 
-      previewImages.forEach((url) => {
-        formData.append("existingImages", url);
-      });
+    previewImages.forEach((url) => {
+      formData.append("existingImages", url);
+    });
 
-      newImageUrls.forEach((url) => {
-        if (url.trim()) formData.append("imageUrls", url);
-      });
+    newImageUrls.forEach((url) => {
+      if (url.trim()) formData.append("imageUrls", url);
+    });
 
-      newFiles.forEach((file) => {
-        if (file) formData.append("images", file);
-      });
+    newFiles.forEach((file) => {
+      if (file) formData.append("images", file);
+    });
 
-      await axios.put(
-        `http://localhost:8000/api/removedishes/${editDish._id}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+    await axios.put(
+      `http://localhost:8000/api/removedishes/${editDish._id}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
 
-      setShowModal(false);
-      fetchDishes();
-    } catch (error) {
-      console.error("Update Error:", error);
-      toast.error("Failed to update");
-    }
-  };
+    setLoadingUpdate(false);
+    setShowModal(false);
+    fetchDishes();
+    toast.success("Category successfully updated!");
+  } catch (error) {
+    console.error("Update Error:", error);
+    setLoadingUpdate(false);
+    toast.error(" Failed to update");
+  }
+};
 
   const handleUrlChange = (index, value) => {
     const updated = [...newImageUrls];
@@ -159,7 +164,7 @@ const [selectedDeleteId, setSelectedDeleteId] = useState(null);
 
                 </div>
                 {showDeleteModal && (
-  <div className="modal show d-block" tabIndex="-1">
+  <div className="modal show d-block bg-dark" tabIndex="-1">
     <div className="modal-dialog">
       <div className="modal-content">
         <div className="modal-header bg-danger text-white">
@@ -285,9 +290,24 @@ const [selectedDeleteId, setSelectedDeleteId] = useState(null);
                 <button className="btn btn-secondary" onClick={() => setShowModal(false)}>
                   Cancel
                 </button>
-                <button className="btn btn-warning" onClick={handleUpdate}>
-                  Save Changes
-                </button>
+               <div className="modal-footer">
+  
+  <button className="btn btn-warning" onClick={handleUpdate} disabled={loadingUpdate}>
+    {loadingUpdate ? (
+      <>
+        <span
+          className="spinner-border spinner-border-sm me-2"
+          role="status"
+          aria-hidden="true"
+        ></span>
+        Updating...
+      </>
+    ) : (
+      "Save Changes"
+    )}
+  </button>
+</div>
+
               </div>
             </div>
           </div>

@@ -1,45 +1,41 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import AppContext from './components/context/appContext';
-import Cart from './components/Cart';
-
 const ProductDetail = ({ product, onClose }) => {
   const history = useHistory();
-  const { updateCart, removeFromCart, cartItem } = useContext(AppContext);
-
-  const [quantity, setQuantity] = useState(1);
+const { updateCart, removeFromCart, cartItems, setSidebarOpen } = useContext(AppContext); 
+const [quantity, setQuantity] = useState(1);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 const [showCartModal, setShowCartModal] = useState(false);
 
-  useEffect(() => {
-    if (cartItem?.product?._id === product._id) {
-      setQuantity(cartItem.quantity);
-    }
-  }, [cartItem, product._id]);
+ useEffect(() => {
+  const existing = cartItems.find(item => item.product._id === product._id);
+  if (existing) {
+    setQuantity(existing.quantity);
+  }
+}, [cartItems, product._id]);
 
-  const increaseQty = () => {
-    const newQty = quantity + 1;
+const increaseQty = () => {
+  const newQty = quantity + 1;
+  setQuantity(newQty);
+  updateCart(product, newQty);
+};
+
+const decreaseQty = () => {
+  if (quantity === 1) {
+    removeFromCart(product._id);
+  } else {
+    const newQty = quantity - 1;
     setQuantity(newQty);
     updateCart(product, newQty);
-  };
-
-  const decreaseQty = () => {
-    if (quantity === 1) {
-      removeFromCart(product._id);
-    } else {
-      const newQty = quantity - 1;
-      setQuantity(newQty);
-      updateCart(product, newQty);
-    }
-  };
+  }
+};
 
 const handleCheckout = () => {
   updateCart(product, quantity);
-  setTimeout(() => {
-    setShowCartModal(true);
-  }, 100);
+  onClose(); 
+  setSidebarOpen(true); 
 };
-
 
 
   return (
@@ -47,7 +43,7 @@ const handleCheckout = () => {
       <div className="custom-slide-up">
         <div className="modal-content-wrapper p-4">
           <div className="d-flex justify-content-between align-items-center mb-3">
-            <h5 className="fw-bold mb-0" style={{ fontFamily: "'Playfair Display', serif", fontSize: "200%" }}>
+            <h5 className="text-muted fw-bold mb-0" style={{ fontFamily: "'Playfair Display', serif", fontSize: "240%" }}>
               {product.title}
             </h5>
             <button type="button" className="btn-close" onClick={onClose}></button>
@@ -105,8 +101,6 @@ const handleCheckout = () => {
         </div>
 
       </div>
-                        <Cart isOpen={showCartModal} onClose={() => setShowCartModal(false)} />
-
 
       <style>{`
       .add-to-cart-btn {

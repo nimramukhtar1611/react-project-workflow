@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
 
 function Meta() {
   const [meta, setMeta] = useState({ title: '', description: '' });
@@ -26,9 +27,7 @@ function Meta() {
           setMeta(savedData.meta || defaultMeta);
         }
       } catch (err) {
-        console.error('Error handling metadata:', err)
-        toast.error("error fetching data ")
-        ;
+        console.error('Error handling metadata:', err);
       }
     };
 
@@ -53,17 +52,19 @@ function Meta() {
 
       const result = await res.json();
       setMeta(result?.meta || meta);
-      alert(result.message || 'Updated');
+
+      toast.success(result.message || 'Meta data updated successfully!');
     } catch (error) {
       console.error('Submit error:', error);
-      alert('Update failed.');
+      toast.error('Failed to update meta data.');
     } finally {
       setLoading(false);
     }
   };
 
-   return (
+  return (
     <div className="container py-4">
+      <ToastContainer />
       <div className="row">
         <div className="col-12">
           <h2 style={{ color: '#E1AD01', marginBottom: '20px' }}>🛠️ Admin Panel: Update Meta Info</h2>
@@ -92,8 +93,24 @@ function Meta() {
               />
             </div>
 
-            <button type="submit" className="btn w-100" style={{ backgroundColor: '#E1AD01', color: '#000' }} disabled={loading}>
-              {loading ? 'Updating...' : 'Update Meta'}
+            <button
+              type="submit"
+              className="btn w-100 d-flex justify-content-center align-items-center"
+              style={{ backgroundColor: '#E1AD01', color: '#000' }}
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                  Updating...
+                </>
+              ) : (
+                'Update Meta'
+              )}
             </button>
           </form>
         </div>

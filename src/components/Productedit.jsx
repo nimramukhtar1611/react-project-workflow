@@ -41,11 +41,12 @@ const addMoreFileField = () => {
     }
   };
 
- const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault();
   setSuccess("");
   setError("");
- setLoading(true);
+
+  // ✅ Validation first, loader baad may!
   if (!form.title.trim()) {
     toast.error("Title is required!");
     return;
@@ -70,6 +71,9 @@ const addMoreFileField = () => {
     toast.error("At least one image (URL or file) is required!");
     return;
   }
+
+  // ✅ Loader yahan hona chahiye, sab validation pass hone k baad
+  setLoading(true);
 
   const formData = new FormData();
   formData.append("title", form.title);
@@ -103,11 +107,10 @@ const addMoreFileField = () => {
     setSelectedFiles([]);
   } catch (err) {
     toast.error(err.response?.data?.error || "Failed to add product");
-  }finally {
-      setLoading(false); }
+  } finally {
+    setLoading(false);
+  }
 };
-
-
 
   return (
     <div className="container py-4">

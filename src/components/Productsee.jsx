@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { toast } from "react-toastify";
-
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
 const Productsee = () => {
   const [products, setProducts] = useState([]);
+  const [loadingUpdate, setLoadingUpdate] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
   const [editProduct, setEditProduct] = useState(null);
   const [newTitle, setNewTitle] = useState("");
@@ -51,42 +52,46 @@ const Productsee = () => {
     setFileInputs([0]);
   };
 
-  const handleUpdate = async () => {
-    try {
-      const formData = new FormData();
-      formData.append("title", newTitle);
-      formData.append("desc", newDesc);
-      formData.append("price", newPrice);
+ const handleUpdate = async () => {
+  setLoadingUpdate(true);
+  try {
+    const formData = new FormData();
+    formData.append("title", newTitle);
+    formData.append("desc", newDesc);
+    formData.append("price", newPrice);
 
-      previewImages.forEach((url) => {
-        formData.append("existingImages", url);
-      });
+    previewImages.forEach((url) => {
+      formData.append("existingImages", url);
+    });
 
-      imageUrls.forEach((url) => {
-        if (url.trim()) formData.append("imageUrls", url);
-      });
+    imageUrls.forEach((url) => {
+      if (url.trim()) formData.append("imageUrls", url);
+    });
 
-      // Append all files from all file inputs
-      imageFiles.flat().forEach((file) => {
-        formData.append("images", file);
-      });
+    imageFiles.flat().forEach((file) => {
+      formData.append("images", file);
+    });
 
-      await axios.put(
-        `http://localhost:8000/api/removeproduct/${editProduct._id}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+    await axios.put(
+      `http://localhost:8000/api/removeproduct/${editProduct._id}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
 
-      setEditProduct(null);
-      fetchProducts();
-    } catch (err) {
-      toast.error("Update failed");
-    }
-  };
+    setEditProduct(null);
+    fetchProducts();
+    toast.success("Product successfully updated!");
+  } catch (err) {
+    toast.error("Update failed");
+  } finally {
+    setLoadingUpdate(false);
+  }
+};
+
 
   const addMoreUrl = () => setImageUrls([...imageUrls, ""]);
 
@@ -113,6 +118,8 @@ const Productsee = () => {
 
   return (
     <div className="container py-4">
+            <ToastContainer />
+
       <h2 className="mb-4" style={{ color: "#E1AD01" }}>🛍️ View & Edit Products</h2>
       <div className="row">
         {products.map((product) => (
@@ -146,7 +153,7 @@ const Productsee = () => {
 </button></div>
 
 {productToDelete && (
-  <div className="modal show d-block" >
+  <div className="modal show bg-dark d-block" >
     <div className="modal-dialog">
       <div className="modal-content">
         <div className="modal-header bg-danger text-white">
@@ -214,7 +221,20 @@ const Productsee = () => {
               </div>
               <div className="modal-footer">
                 <button className="btn btn-secondary" onClick={() => setEditProduct(null)}>Cancel</button>
-                <button className="btn btn-success" onClick={handleUpdate}>💾 Save</button>
+<button
+  className="btn btn-success"
+  onClick={handleUpdate}
+  disabled={loadingUpdate}
+>
+  {loadingUpdate ? (
+    <>
+      <span className="spinner-border spinner-border-sm me-2" role="status" />
+      updating...
+    </>
+  ) : (
+    <> Save Changes</>
+  )}
+</button>
               </div>
             </div>
           </div>

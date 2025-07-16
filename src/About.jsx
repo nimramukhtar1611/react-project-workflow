@@ -14,7 +14,6 @@ const AboutPage = () => {
       .get("http://localhost:8000/api/footer")
       .then((res) => setFooterData(res.data))
        .catch((err) => console.log(err),
-      toast.error("failed to fetch contact")
 )
        ;
 
@@ -22,7 +21,6 @@ const AboutPage = () => {
       .get("http://localhost:8000/api/contact")
       .then((res) => setContactData(res.data))
  .catch((err) => console.log(err),
-toast.error("failed to fetch contact")
 );
   }, []);
 

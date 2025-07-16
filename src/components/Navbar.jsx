@@ -3,18 +3,20 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import AppContext from './context/appContext';
+import CheckoutPage from '../CheckoutPage'
+import { useHistory } from "react-router-dom";
 
 const Navbar = () => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [categories, setCategories] = useState([]);
   const [sidebarWidth, setSidebarWidth] = useState("300px");
   const [isNavOpen, setIsNavOpen] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSmallDevice, setIsSmallDevice] = useState(window.innerWidth < 992);
+const history = useHistory();
 
-  const { cartItem, updateCart } = useContext(AppContext);
-  const product = cartItem?.product;
-  const quantity = cartItem?.quantity || 1;
+const { cartItems, updateCart, removeFromCart, IsSidebarOpen, setSidebarOpen } = useContext(AppContext);
+  const product = cartItems?.product;
+  const quantity = cartItems?.quantity || 1;
 
   const navItems = [
     { label: 'Home', to: '/' },
@@ -22,7 +24,9 @@ const Navbar = () => {
   ];
 
   const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
+    setSidebarOpen(!IsSidebarOpen);
+      setSidebarOpen(!IsSidebarOpen);
+
   };
 
   const toggleNavbar = () => {
@@ -61,9 +65,16 @@ const Navbar = () => {
       });
   }, []);
 
-  return (
-    <nav className="navbar navbar-expand-lg navbar-light px-lg-5 px-2 py-3"
-      style={{ backgroundColor: isSmallDevice ? '#dcdcdc' : '#222' }}
+  return (<>
+  <style>
+  {`
+    .navbar-dark .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+  `}
+</style>
+    <nav className="navbar navbar-expand-lg navbar-dark px-lg-5 px-2 py-3"
+      style={{ backgroundColor: isSmallDevice ? '#222' : '#222' }}
     >
       <Link
         className="navbar-brand fw-bold text-warning"
@@ -76,15 +87,37 @@ const Navbar = () => {
       >
         AURUM
       </Link>
-<div>   <button
-        className="navbar-toggler d-lg-none"
-        type="button"
-        style={{ backgroundColor: "#dcdcdc" }}
-        onClick={toggleNavbar}
-      >
-        <span className="navbar-toggler-icon"></span>
-      </button></div>
-   
+
+      {/* Toggler + Cart for small devices */}
+      <div className="d-flex d-lg-none align-items-center gap-2">
+        {/* Navbar toggler */}
+        <button
+          className="navbar-toggler"
+          type="button"
+          style={{ backgroundColor: "#222", }}
+          onClick={toggleNavbar}
+        >
+          <span style={{color:"white"}} className="navbar-toggler-icon"></span>
+        </button>
+
+        {/* Cart icon for small screen */}
+        <button
+          className="btn px-2 py-1 d-flex align-items-center justify-content-center"
+          style={{
+            background: "transparent",
+            border: "none",
+            fontSize: "1.3rem",
+            color: "#E1AD01",
+            position: "relative",
+            cursor: "pointer",
+            width: "40px",
+            height: "40px",
+          }}
+          onClick={toggleSidebar}
+        >
+          🛒
+        </button>
+      </div>
 
       {/* Collapsible navbar */}
       <div className={`collapse navbar-collapse justify-content-between ${isNavOpen ? 'show' : ''}`} id="navbarNav">
@@ -135,165 +168,168 @@ const Navbar = () => {
           })}
         </ul>
 
-        {/* Cart Button + Sidebar */}
-        <div>
-        <button
-  className="btn px-3 py-2 d-flex align-items-center justify-content-center"
-  style={{
-    background: "transparent",
-    border: "none",
-    fontSize: "1.5rem",
-    color: "#E1AD01",
-    position: "relative",
-    cursor: "pointer",
-    width: "48px",
-    height: "48px",
-  }}
-  onClick={toggleSidebar}
->
-  🛒
-</button>
-
-
-          {/* Overlay */}
-          {isSidebarOpen && (
-            <div
-              onClick={toggleSidebar}
-              style={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                width: "100vw",
-                height: "100vh",
-                backgroundColor: "rgba(0, 0, 0, 0.4)",
-                zIndex: 999,
-              }}
-            />
-          )}
-
-          {/* Cart Sidebar */}
-          <div
+        {/* Cart Button for large screens */}
+        <div className="d-none d-lg-block">
+          <button
+            className="btn px-3 py-2 d-flex align-items-center justify-content-center"
             style={{
-              position: "fixed",
-              top: 0,
-              right: isSidebarOpen ? 0 : `-${sidebarWidth}`,
-              width: sidebarWidth,
-              height: "100vh",
-              backgroundColor: "#fff",
-              boxShadow: "-2px 0 10px rgba(0,0,0,0.3)",
-              padding: "20px",
-              zIndex: 1050,
-              transition: "right 0.3s ease-in-out",
-              borderTopLeftRadius: "10px",
-              borderBottomLeftRadius: "10px",
-              display: "flex",
-              flexDirection: "column",
+              background: "transparent",
+              border: "none",
+              fontSize: "1.5rem",
+              color: "#E1AD01",
+              position: "relative",
+              cursor: "pointer",
+              width: "48px",
+              height: "48px",
             }}
+            onClick={toggleSidebar}
           >
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <h3 style={{ margin: 0, fontSize: "1.2rem" }}>🛍️ Your Cart</h3>
-              <button
-                onClick={toggleSidebar}
-                style={{
-                  background: "none",
-                  border: "none",
-                  fontSize: "1.5rem",
-                  cursor: "pointer",
-                  color: "#999",
-                }}
-                title="Close"
-              >
-                &times;
-              </button>
-            </div>
-
-            <hr style={{ margin: "15px 0" }} />
-
-            {product ? (
-              <div style={{ flex: 1 }}>
-                <img
-                  src={product.images?.[0] || "https://via.placeholder.com/150"}
-                  alt={product.title}
-                  style={{
-                    width: "100%",
-                    borderRadius: "8px",
-                    marginBottom: "10px",
-                    objectFit: "cover",
-                  }}
-                />
-                <h5 style={{ margin: "10px 0", fontWeight: "600", fontSize: "1rem" }}>
-                  {product.title}
-                </h5>
-
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    marginTop: "10px",
-                  }}
-                >
-                  <button
-                    onClick={() => updateCart(product, Math.max(quantity - 1, 1))}
-                    style={{
-                      backgroundColor: "#E1AD01",
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: "50%",
-                      width: "30px",
-                      height: "30px",
-                      fontWeight: "bold",
-                      fontSize: "1rem",
-                      cursor: "pointer",
-                    }}
-                  >
-                    −
-                  </button>
-
-                  <span style={{ fontWeight: "bold", fontSize: "1.2rem" }}>{quantity}</span>
-
-                  <button
-                    onClick={() => updateCart(product, quantity + 1)}
-                    style={{
-                      backgroundColor: "#E1AD01",
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: "50%",
-                      width: "30px",
-                      height: "30px",
-                      fontWeight: "bold",
-                      fontSize: "1rem",
-                      cursor: "pointer",
-                    }}
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <p style={{ color: "#777", fontSize: "0.9rem" }}>Your cart is currently empty.</p>
-            )}
-
-            <button
-              onClick={toggleSidebar}
-              style={{
-                marginTop: "auto",
-                backgroundColor: "#E1AD01",
-                color: "#fff",
-                border: "none",
-                padding: "10px",
-                borderRadius: "5px",
-                cursor: "pointer",
-                fontWeight: "bold",
-                fontSize: "1rem",
-              }}
-            >
-              Continue
-            </button>
-          </div>
+            🛒
+          </button>
         </div>
       </div>
+
+      {/* Overlay */}
+      {IsSidebarOpen && (
+        <div
+          onClick={toggleSidebar}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "rgba(0, 0, 0, 0.4)",
+            zIndex: 999,
+          }}
+        />
+      )}
+
+      {/* Cart Sidebar */}
+    <div
+  style={{
+    position: "fixed",
+    top: 0,
+    right: IsSidebarOpen ? 0 : `-${sidebarWidth}`,
+    width: sidebarWidth,
+    height: "100vh",
+    backgroundColor: "#fff",
+    boxShadow: "-2px 0 10px rgba(0,0,0,0.3)",
+    zIndex: 1050,
+    transition: "right 0.3s ease-in-out",
+    borderTopLeftRadius: "10px",
+    borderBottomLeftRadius: "10px",
+    display: "flex",
+    flexDirection: "column",
+  }}
+>
+
+       {/* Header */}
+<div style={{ display: "flex", justifyContent: "space-between", padding: "20px" }}>
+  <h3 style={{ margin: 0, fontSize: "1.2rem" }}>🛍️ Your Cart</h3>
+  <button
+    onClick={toggleSidebar}
+    style={{
+      background: "none",
+      border: "none",
+      fontSize: "1.5rem",
+      cursor: "pointer",
+      color: "#999",
+    }}
+    title="Close"
+  >
+    &times;
+  </button>
+</div>
+
+<hr style={{ margin: "0 20px" }} />
+
+<div
+  style={{
+    flex: 1,
+    overflowY: "auto",
+    padding: "0 20px",
+  }}
+>
+  {cartItems.length > 0 ? (
+    cartItems.map((item, index) => (
+      <div key={index} style={{ marginBottom: "20px" }}>
+        <img
+          src={item.product.images?.[0] || "https://via.placeholder.com/150"}
+          alt={item.product.title}
+          style={{
+            width: "100%",
+            borderRadius: "8px",
+            objectFit: "cover",
+          }}
+        />
+        <h5>{item.product.title}</h5>
+        <div  style={{
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "clamp(0.5rem, 2vw, 1rem)",
+    marginTop: "10px",
+  }}>
+          <button   style={{
+      padding: "clamp(4px, 1vw, 8px) clamp(10px, 2vw, 14px)",
+      fontSize: "clamp(1rem, 2.5vw, 1.5rem)",
+      backgroundColor: "#f0f0f0",
+      border: "1px solid #ccc",
+      borderRadius: "6px",
+    }} onClick={() => updateCart(item.product, Math.max(item.quantity - 1, 1))}>−</button>
+          <span  style={{
+      fontWeight: "bold",
+      fontSize: "clamp(1rem, 2vw, 1.3rem)",
+      minWidth: "30px",
+      textAlign: "center",
+    }}>{item.quantity}</span>
+          <button style={{
+      padding: "clamp(4px, 1vw, 8px) clamp(10px, 2vw, 14px)",
+      fontSize: "clamp(1rem, 2.5vw, 1.5rem)",
+      backgroundColor: "#f0f0f0",
+      border: "1px solid #ccc",
+      borderRadius: "6px",
+    }} onClick={() => updateCart(item.product, item.quantity + 1)}>+</button>
+        </div>
+        <button
+          onClick={() => removeFromCart(item.product._id)}
+          className="btn btn-danger btn-sm mt-2"
+        >
+          Remove
+        </button>
+      </div>
+    ))
+  ) : (
+    <p>Your cart is currently empty.</p>
+  )}
+</div>
+
+{/* Sticky Bottom Button */}
+<div style={{ padding: "20px" }}>
+  <button
+ onClick={() => {
+    toggleSidebar();
+    history.push("/checkout");
+  }}    style={{
+      width: "100%",
+      backgroundColor: "#E1AD01",
+      color: "#fff",
+      border: "none",
+      padding: "10px",
+      borderRadius: "5px",
+      cursor: "pointer",
+      fontWeight: "bold",
+      fontSize: "1rem",
+    }}
+     
+  >
+Checkout </button>
+</div>
+</div>
+
     </nav>
+    </>
   );
 };
 

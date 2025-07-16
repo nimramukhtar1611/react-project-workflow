@@ -126,26 +126,26 @@ const Sidebar = () => {
         <div className="sidebar-overlay" onClick={() => setIsOpen(false)}></div>
       )}
 
-      <div
-        className="no-scrollbar"
-        style={{
-        position: isMobile ? "fixed" : "fixed",
-top: 0,
-left: 0,
-height: isMobile ? "60vh" : "100vh",
-width: isMobile ? "100vw" : "50%",
-          maxWidth: "300px",
-          background: isMobile ? "#f4f4f4" : "#222",
-          color: isMobile ? "#222" : "#fff",
-          zIndex: 1051,
-transform: isMobile && !isOpen ? "translateY(-100%)" : "translateY(0)",
-          transition: "transform 0.3s ease-in-out",
-          padding: "60px 0 30px",
-          borderRight: "2px solid #E1AD01",
-          fontFamily: "sans-serif",
-          overflowY: "auto",
-        }}
-      >
+    <div
+  className="no-scrollbar sidebar-slide"
+  style={{
+    position: "fixed",
+    top: 0,
+    left: 0,
+    height: "100vh",
+    width: isMobile ? "70vw" : "300px",
+    background: isMobile ? "#222" : "#222",
+    color: isMobile ? "#222" : "#fff",
+    zIndex: 1051,
+    transform: isMobile && !isOpen ? "translateX(-100%)" : "translateX(0)",
+    transition: "transform 0.3s ease-in-out",
+    padding: "60px 0 30px",
+    borderRight: "2px solid #E1AD01",
+    fontFamily: "sans-serif",
+    overflowY: "auto",
+  }}
+>
+
         <div
           style={{
             color: "#E1AD01",
