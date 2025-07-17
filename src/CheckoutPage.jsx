@@ -6,8 +6,8 @@ import AppContext from "./components/context/appContext";
 const CheckoutPage = () => {
   const { cartItems, clearCart } = useContext(AppContext);
   const [showSummary, setShowSummary] = useState(false);
-
   const history = useHistory();
+
   useEffect(() => {
     if (!cartItems || cartItems.length === 0) {
       history.push("/");
@@ -22,9 +22,10 @@ const CheckoutPage = () => {
     address: "",
     city: "",
     postalCode: "",
-     shippingmethod: "Pakistan",
+    shippingmethod: "Pakistan",
     paymentMethod: "Cash on Delivery",
   });
+
   const total = cartItems.reduce((acc, item) => {
     const price = parseFloat(String(item.product.price).replace(/[^0-9.]/g, ""));
     return acc + price * item.quantity;
@@ -37,7 +38,7 @@ const CheckoutPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     toast.success("Order placed successfully!");
-    console.log("Order submitted:", formData);
+    console.log("Order submitted:", formData, cartItems);
     clearCart();
     setFormData({
       firstName: "",
@@ -47,9 +48,10 @@ const CheckoutPage = () => {
       address: "",
       city: "",
       postalCode: "",
+      shippingmethod: "Pakistan",
       paymentMethod: "Cash on Delivery",
     });
-    history.push("/"); 
+    history.push("/");
   };
 
   return (
@@ -72,8 +74,10 @@ const CheckoutPage = () => {
       >
         Aurum
       </h2>
+
+      {/* Order Summary Toggle */}
 <div
-  className="d-flex justify-content-between align-items-center p-3 mb-3 rounded shadow-sm"
+  className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center p-3 mb-3 rounded shadow-sm"
   style={{
     backgroundColor: "#f9f9f9",
     cursor: "pointer",
@@ -81,41 +85,49 @@ const CheckoutPage = () => {
   }}
   onClick={() => setShowSummary(!showSummary)}
 >
-  <div className="d-flex align-items-center">
+  {/* Left Side */}
+  <div className="d-flex align-items-center mb-2 mb-sm-0">
     <h5
       className="mb-0"
       style={{
-        fontSize: "0.9rem",
-        fontWeight: "550",
+        fontSize: "1rem",
+        fontWeight: "600",
         color: "#222",
         fontFamily: "'Poppins', sans-serif",
       }}
     >
-      Show Order Summary
+   Show Order Summary
     </h5>
     <span
       style={{
-        fontSize: "1rem",
-        marginLeft: "10px",
+        fontSize: "1.2rem",
+        marginLeft: "8px",
         display: "inline-block",
         transform: showSummary ? "rotate(180deg)" : "rotate(0)",
         transition: "transform 0.3s ease",
+        color: "#333",
       }}
     >
       ▼
     </span>
   </div>
+
+  {/* Right Side - Total */}
   <span
+    className="text-sm-end"
     style={{
-      fontWeight: "550",
+      fontWeight: "600",
       fontSize: "1.1rem",
-      color: "#161718ff",
-          fontFamily: "'Playfair Display', serif",
+      color: "#161718",
+      fontFamily: "'Playfair Display', serif",
     }}
   >
-Rs {(total + 250).toFixed(2)}  </span>
+    Rs {(total + 250).toFixed(2)}
+  </span>
 </div>
 
+
+{/* Summary List */}
 {showSummary && (
   <div className="bg-light p-3 rounded mb-4">
     {cartItems.map((item, index) => {
@@ -123,47 +135,80 @@ Rs {(total + 250).toFixed(2)}  </span>
       const subtotal = price * item.quantity;
       return (
         <div key={index} className="border-bottom py-3">
-          <div className="d-flex flex-column flex-sm-row align-items-sm-center gap-3">
-            <img
-              src={item.product.images[0]}
-              alt={item.product.title}
-              style={{
-                width: "80px",
-                height: "80px",
-                objectFit: "cover",
-                borderRadius: "8px",
-              }}
-            />
-            <div className="flex-grow-1">
-              <h6 className="mb-1">{item.product.title}</h6>
-              <small className="text-muted">
-                Qty: {item.quantity} × Rs {price}
-              </small>
-            </div>
-            <div className="text-sm-end">
-              <strong>Rs {subtotal.toFixed(2)}</strong>
-            </div>
-          </div>
-        </div>
-      );
-    })}
-    
-
-    <div className="mt-3 pt-3 border-top">
-  <div className="d-flex justify-content-between">
-    <strong>Shipping:</strong>
-    <strong>Rs 250</strong> 
+          <div className="row align-items-center">
+            {/* IMAGE */}
+           <div className="col-4 col-sm-2">
+  <div
+    style={{
+      position: "relative",
+      width: "100px",
+      height: "75px",
+    }}
+  >
+    <img
+      src={item.product.images[0]}
+      alt={item.product.title}
+      className="img-fluid rounded"
+      style={{
+        objectFit: "cover",
+        width: "100%",
+        height: "100%",
+        borderRadius: "0.5rem",
+      }}
+    />
+   
+    <span
+      style={{
+        position: "absolute",
+        top: "-8px",
+        right: "-8px",
+        backgroundColor: "#E1AD01",
+        color: "#fff",
+        borderRadius: "50%",
+        width: "24px",
+        height: "24px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontSize: "0.75rem",
+        fontWeight: "bold",
+        boxShadow: "0 0 4px rgba(0,0,0,0.3)",
+      }}
+    >
+      {item.quantity}
+    </span>
   </div>
-  <div className="d-flex justify-content-between mt-2">
-    <strong>Subtotal:</strong>
-    <strong>Rs {(total + 250).toFixed(2)}</strong>
+    <div className="mb-0" style={{ fontSize: "1.3rem", }}>
+    {item.product.title}
   </div>
 </div>
 
-  </div>)}
-    <form onSubmit={handleSubmit}>
-        <h4 className="mb-3 fw-bold" style={{ color: "#333" }}>Contact Details</h4>
- <div className="row mb-3">
+
+
+            {/* PRICE */}
+           <div className="d-flex justify-content-between align-items-center mt-3">
+      <strong>Sub Total:</strong>
+              <strong style={{ fontSize: "1rem" }}>Rs {subtotal.toFixed(2)}</strong>
+    </div>
+  </div>
+        </div>
+      );
+    })}
+
+    {/* TOTAL */}
+    <div className="d-flex justify-content-between align-items-center mt-3">
+      <strong>Total:</strong>
+      <strong>Rs {(total + 250).toFixed(2)}</strong>
+    </div>
+  </div>
+)}
+
+      {/* Checkout Form */}
+      <form onSubmit={handleSubmit}>
+        <h4 className="mb-3 fw-bold" style={{ color: "#333" }}>
+          Contact Details
+        </h4>
+        <div className="row mb-3">
           <div className="col-md-6">
             <label className="form-label">First Name</label>
             <input
@@ -256,38 +301,40 @@ Rs {(total + 250).toFixed(2)}  </span>
             />
           </div>
         </div>
-  <div className="mb-3">
-  <label className="form-label fw-bold" style={{ color: "#333" }}>
-    Shipping Method
-  </label>
-  <select
-    className="form-select"
-    name="shippingmethod"
-    value={formData.shippingmethod}
-    onChange={handleChange}
-    style={{
-      backgroundColor: "#fff",
-      borderColor: "#dcdcdc",
-      padding: "10px",
-    }}
-  >
-    <option value="Pakistan">Pakistan</option>
-  </select>
-</div>
 
         <div className="mb-3">
-           
-          <label className="mb-3 fw-bold" style={{ color: "#333" }}>Payment Method</label>
+          <label className="form-label fw-bold" style={{ color: "#333" }}>
+            Shipping Method
+          </label>
           <select
             className="form-select"
-            style={{ backgroundColor: "#fff", borderColor: "#dcdcdc" }}
+            name="shippingmethod"
+            value={formData.shippingmethod}
+            onChange={handleChange}
+            style={{
+              backgroundColor: "#fff",
+              borderColor: "#dcdcdc",
+              padding: "10px",
+            }}
+          >
+            <option value="Pakistan">Pakistan</option>
+          </select>
+        </div>
+
+        <div className="mb-3">
+          <label className="mb-3 fw-bold" style={{ color: "#333" }}>
+            Payment Method
+          </label>
+          <select
+            className="form-select"
             name="paymentMethod"
             value={formData.paymentMethod}
             onChange={handleChange}
+            style={{ backgroundColor: "#fff", borderColor: "#dcdcdc" }}
           >
             <option>Cash on Delivery</option>
           </select>
-        </div>       
+        </div>
 
         <button
           type="submit"
