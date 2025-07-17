@@ -5,6 +5,8 @@ import AppContext from "./components/context/appContext";
 
 const CheckoutPage = () => {
   const { cartItems, clearCart } = useContext(AppContext);
+  const [showSummary, setShowSummary] = useState(false);
+
   const history = useHistory();
   useEffect(() => {
     if (!cartItems || cartItems.length === 0) {
@@ -20,6 +22,7 @@ const CheckoutPage = () => {
     address: "",
     city: "",
     postalCode: "",
+     shippingmethod: "Pakistan",
     paymentMethod: "Cash on Delivery",
   });
   const total = cartItems.reduce((acc, item) => {
@@ -67,10 +70,98 @@ const CheckoutPage = () => {
           fontFamily: "'Playfair Display', serif",
         }}
       >
-        Checkout
+        Aurum
       </h2>
+<div
+  className="d-flex justify-content-between align-items-center p-3 mb-3 rounded shadow-sm"
+  style={{
+    backgroundColor: "#f9f9f9",
+    cursor: "pointer",
+    border: "1px solid #ddd",
+  }}
+  onClick={() => setShowSummary(!showSummary)}
+>
+  <div className="d-flex align-items-center">
+    <h5
+      className="mb-0"
+      style={{
+        fontSize: "1.1rem",
+        fontWeight: "600",
+        color: "#222",
+        fontFamily: "'Poppins', sans-serif",
+      }}
+    >
+      Show Order Summary
+    </h5>
+    <span
+      style={{
+        fontSize: "1rem",
+        marginLeft: "10px",
+        display: "inline-block",
+        transform: showSummary ? "rotate(180deg)" : "rotate(0)",
+        transition: "transform 0.3s ease",
+      }}
+    >
+      ▼
+    </span>
+  </div>
+  <span
+    style={{
+      fontWeight: "550",
+      fontSize: "1.1rem",
+      color: "#161718ff",
+          fontFamily: "'Playfair Display', serif",
+    }}
+  >
+Rs {(total + 250).toFixed(2)}  </span>
+</div>
 
-      <form onSubmit={handleSubmit}>
+{showSummary && (
+  <div className="bg-light p-3 rounded mb-4">
+    {cartItems.map((item, index) => {
+      const price = parseFloat(String(item.product.price).replace(/[^0-9.]/g, ""));
+      const subtotal = price * item.quantity;
+      return (
+        <div key={index} className="border-bottom py-3">
+          <div className="d-flex flex-column flex-sm-row align-items-sm-center gap-3">
+            <img
+              src={item.product.images[0]}
+              alt={item.product.title}
+              style={{
+                width: "80px",
+                height: "80px",
+                objectFit: "cover",
+                borderRadius: "8px",
+              }}
+            />
+            <div className="flex-grow-1">
+              <h6 className="mb-1">{item.product.title}</h6>
+              <small className="text-muted">
+                Qty: {item.quantity} × Rs {price}
+              </small>
+            </div>
+            <div className="text-sm-end">
+              <strong>Rs {subtotal.toFixed(2)}</strong>
+            </div>
+          </div>
+        </div>
+      );
+    })}
+    
+
+    <div className="mt-3 pt-3 border-top">
+  <div className="d-flex justify-content-between">
+    <strong>Shipping:</strong>
+    <strong>Rs 250</strong> 
+  </div>
+  <div className="d-flex justify-content-between mt-2">
+    <strong>Subtotal:</strong>
+    <strong>Rs {(total + 250).toFixed(2)}</strong>
+  </div>
+</div>
+
+  </div>)}
+    <form onSubmit={handleSubmit}>
         <h4 className="mb-3 fw-bold" style={{ color: "#333" }}>Contact Details</h4>
  <div className="row mb-3">
           <div className="col-md-6">
@@ -165,9 +256,28 @@ const CheckoutPage = () => {
             />
           </div>
         </div>
+  <div className="mb-3">
+  <label className="form-label fw-bold" style={{ color: "#333" }}>
+    Shipping Method
+  </label>
+  <select
+    className="form-select"
+    name="shippingmethod"
+    value={formData.shippingmethod}
+    onChange={handleChange}
+    style={{
+      backgroundColor: "#fff",
+      borderColor: "#dcdcdc",
+      padding: "10px",
+    }}
+  >
+    <option value="Pakistan">Pakistan</option>
+  </select>
+</div>
 
         <div className="mb-3">
-          <label className="form-label">Payment Method</label>
+           
+          <label className="mb-3 fw-bold" style={{ color: "#333" }}>Payment Method</label>
           <select
             className="form-select"
             style={{ backgroundColor: "#fff", borderColor: "#dcdcdc" }}
@@ -177,24 +287,7 @@ const CheckoutPage = () => {
           >
             <option>Cash on Delivery</option>
           </select>
-        </div>
-        <hr className="my-4" />
-        <h4 className="mb-3 fw-bold" style={{ color: "#333" }}>Order Summary</h4>
-
-        <div className="bg-light p-3 rounded">
-          {cartItems.map((item, index) => {
-            const price = parseFloat(String(item.product.price).replace(/[^0-9.]/g, ""));
-            return (
-              <div key={index} className="mb-2">
-                <p><strong>Product:</strong> {item.product.title}</p>
-                <p><strong>Quantity:</strong> {item.quantity}</p>
-                <p><strong>Unit Price:</strong> Rs {price}</p>
-                <hr />
-              </div>
-            );
-          })}
-          <h5 className="text-success">Total: Rs {total.toFixed(2)}</h5>
-        </div>
+        </div>       
 
         <button
           type="submit"

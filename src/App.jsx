@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Switch, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import CheckoutPage from './CheckoutPage';
+import DynamicMeta from './DynamicMeta';
 import About from './About';
 import ProductDetail from './ProductDetail';
 import 'react-toastify/dist/ReactToastify.css';

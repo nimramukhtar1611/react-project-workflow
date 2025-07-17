@@ -13,10 +13,18 @@ const Navbar = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isSmallDevice, setIsSmallDevice] = useState(window.innerWidth < 992);
 const history = useHistory();
-
 const { cartItems, updateCart, removeFromCart, IsSidebarOpen, setSidebarOpen } = useContext(AppContext);
   const product = cartItems?.product;
   const quantity = cartItems?.quantity || 1;
+const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+useEffect(() => {
+  const handleResize = () => {
+    setIsMobile(window.innerWidth < 768);
+  };
+  window.addEventListener("resize", handleResize);
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
 
   const navItems = [
     { label: 'Home', to: '/' },
@@ -227,7 +235,7 @@ const { cartItems, updateCart, removeFromCart, IsSidebarOpen, setSidebarOpen } =
        {/* Header */}
 <div style={{ display: "flex", justifyContent: "space-between", padding: "20px" }}>
   <h3 style={{ margin: 0, fontSize: "1.2rem" }}>🛍️ Your Cart</h3>
-  <button
+  <div style={{position:"relative"}}> <button
     onClick={toggleSidebar}
     style={{
       background: "none",
@@ -239,7 +247,8 @@ const { cartItems, updateCart, removeFromCart, IsSidebarOpen, setSidebarOpen } =
     title="Close"
   >
     &times;
-  </button>
+  </button></div>
+ 
 </div>
 
 <hr style={{ margin: "0 20px" }} />
@@ -251,81 +260,153 @@ const { cartItems, updateCart, removeFromCart, IsSidebarOpen, setSidebarOpen } =
     padding: "0 20px",
   }}
 >
-  {cartItems.length > 0 ? (
-    cartItems.map((item, index) => (
-      <div key={index} style={{ marginBottom: "20px" }}>
-        <img
-          src={item.product.images?.[0] || "https://via.placeholder.com/150"}
-          alt={item.product.title}
-          style={{
-            width: "100%",
-            borderRadius: "8px",
-            objectFit: "cover",
-          }}
-        />
-        <h5>{item.product.title}</h5>
-        <div  style={{
+ {cartItems.length > 0 ? (
+  cartItems.map((item, index) => (
+  <div
+  key={index}
+  style={{
+    position: "relative", 
     display: "flex",
+border:"1px solid black",
     alignItems: "center",
-    justifyContent: "center",
-    gap: "clamp(0.5rem, 2vw, 1rem)",
-    marginTop: "10px",
-  }}>
-          <button   style={{
-      padding: "clamp(4px, 1vw, 8px) clamp(10px, 2vw, 14px)",
-      fontSize: "clamp(1rem, 2.5vw, 1.5rem)",
-      backgroundColor: "#f0f0f0",
-      border: "1px solid #ccc",
-      borderRadius: "6px",
-    }} onClick={() => updateCart(item.product, Math.max(item.quantity - 1, 1))}>−</button>
-          <span  style={{
-      fontWeight: "bold",
-      fontSize: "clamp(1rem, 2vw, 1.3rem)",
-      minWidth: "30px",
-      textAlign: "center",
-    }}>{item.quantity}</span>
-          <button style={{
-      padding: "clamp(4px, 1vw, 8px) clamp(10px, 2vw, 14px)",
-      fontSize: "clamp(1rem, 2.5vw, 1.5rem)",
-      backgroundColor: "#f0f0f0",
-      border: "1px solid #ccc",
-      borderRadius: "6px",
-    }} onClick={() => updateCart(item.product, item.quantity + 1)}>+</button>
-        </div>
-        <button
-          onClick={() => removeFromCart(item.product._id)}
-          className="btn btn-danger btn-sm mt-2"
+    gap: "15px",
+    backgroundColor: "#f9f9f9",
+    borderRadius: "10px",
+    padding: "12px",
+    marginBottom: "15px",
+    boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+    width: "100%",
+  }}
+>
+  <button
+    onClick={() => removeFromCart(item.product._id)}
+    style={{
+      position: "absolute",
+ top: isMobile ? "1px" : "2px",
+  right: isMobile ? "45%" : "0px",
+       background: "transparent",
+      border: "none",
+      fontSize: "1.5rem",
+      color: "#999",
+      cursor: "pointer",
+    }}
+    title="Remove"
+  >
+    &times;
+  </button>
+
+      {/* Image */}
+      <img
+        src={item.product.images?.[0] || "https://via.placeholder.com/100"}
+        alt={item.product.title}
+        style={{
+          width: "70px",
+          height: "70px",
+          borderRadius: "6px",
+          objectFit: "cover",
+        }}
+      />
+
+      {/* Content */}
+      <div style={{ flex: 1 }}>
+        {/* Product Title */}
+        <h6 style={{ margin: "0 0 6px", fontWeight: "bold", fontSize: "1rem" }}>
+          {item.product.title}
+        </h6>
+
+        {/* Quantity Controls */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            marginBottom: "6px",
+          }}
         >
-          Remove
-        </button>
+          <button
+            style={{
+              padding: "4px 10px",
+              fontSize: "1rem",
+              backgroundColor: "#eee",
+              border: "1px solid #ccc",
+              borderRadius: "5px",
+            }}
+onClick={() => {
+  if (item.quantity === 1) {
+    removeFromCart(item.product._id);
+  } else {
+    updateCart(item.product, item.quantity - 1);
+  }
+}}
+          >
+            −
+          </button>
+          <span style={{ minWidth: "25px", textAlign: "center" }}>
+            {item.quantity}
+          </span>
+          <button
+            style={{
+              padding: "4px 10px",
+              fontSize: "1rem",
+              backgroundColor: "#eee",
+              border: "1px solid #ccc",
+              borderRadius: "5px",
+            }}
+            onClick={() => updateCart(item.product, item.quantity + 1)}
+          >
+            +
+          </button>
+        </div>
+
+        {/* Price */}
+        <p style={{ margin: 0, fontWeight: "500" }}>
+          Price: Rs. {item.product.price }
+        </p>
       </div>
-    ))
-  ) : (
-    <p>Your cart is currently empty.</p>
-  )}
+    </div>
+  ))
+) : (
+  <p>Your cart is currently empty.</p>
+)}
 </div>
 
-{/* Sticky Bottom Button */}
-<div style={{ padding: "20px" }}>
-  <button
- onClick={() => {
-    toggleSidebar();
-    history.push("/checkout");
-  }}    style={{
-      width: "100%",
-      backgroundColor: "#E1AD01",
-      color: "#fff",
-      border: "none",
-      padding: "10px",
-      borderRadius: "5px",
-      cursor: "pointer",
-      fontWeight: "bold",
-      fontSize: "1rem",
-    }}
-     
-  >
-Checkout </button>
-</div>
+{cartItems.length > 0 && (
+  <div style={{ padding: "20px" }}>
+  <div
+      style={{
+        fontWeight: "bold",
+        marginBottom: "10px",
+        fontSize: "1.1rem",
+        color: "#333",
+      }}
+    >
+      Total Rs: {cartItems.reduce((acc, item) => {
+        const price = parseFloat(String(item.product.price).replace(/[^0-9.]/g, ""));
+        return acc + price * item.quantity;
+      }, 0).toFixed(2)}
+    </div>
+     <button
+      onClick={() => {
+        toggleSidebar();
+        history.push("/checkout");
+      }}
+      style={{
+        width: "100%",
+        backgroundColor: "#E1AD01",
+        color: "#fff",
+        border: "none",
+        padding: "10px",
+        borderRadius: "5px",
+        cursor: "pointer",
+        fontWeight: "bold",
+        fontSize: "1rem",
+      }}
+    >
+      Checkout
+    </button>
+  </div>
+)}
+
 </div>
 
     </nav>
