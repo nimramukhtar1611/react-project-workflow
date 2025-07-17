@@ -85,8 +85,8 @@ const CheckoutPage = () => {
     <h5
       className="mb-0"
       style={{
-        fontSize: "1.1rem",
-        fontWeight: "600",
+        fontSize: "0.9rem",
+        fontWeight: "550",
         color: "#222",
         fontFamily: "'Poppins', sans-serif",
       }}
