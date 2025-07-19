@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useContext } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
+import AppDataContext from "./context/appState";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from "react-toastify";
 const defaultFooter = {
@@ -19,6 +20,7 @@ const defaultFooter = {
 };
 
 const Footeredit = () => {
+const { footerData,updateFooterData  } = useContext(AppDataContext);
   const [form, setForm] = useState(defaultFooter);
   const [original, setOriginal] = useState(defaultFooter);
   const [message, setMessage] = useState("");
@@ -27,14 +29,10 @@ const Footeredit = () => {
 
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8000/api/footer")
-      .then((res) => {
-        setForm({ ...defaultFooter, ...res.data });
-        setOriginal({ ...defaultFooter, ...res.data });
-      })
-      .catch(() => setError("Failed to load footer data."));
-  }, []);
+    if (footerData) {
+      setForm(footerData);
+    }
+  }, [footerData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -81,25 +79,10 @@ const Footeredit = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setMessage("");
-    setError("");
-      setLoading(true);
-    try {
-      const res = await axios.put(
-        "http://localhost:8000/api/footer",
-        { ...original, ...form }
-      );
-      setForm(res.data);
-      setOriginal(res.data);
-      toast.success("Footer updated successfully!");
-    } catch (err) {
-    toast.error  ("Failed to update. Please try again.");
-    }finally {
-    setLoading(false); 
-  }
-  };
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  await updateFooterData(form);
+};
 
   if (!form) return null;
 

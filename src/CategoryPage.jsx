@@ -1,10 +1,11 @@
- import React, { useEffect, useState } from "react";
+ import React, { useEffect, useState,useContext } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { Carousel } from 'react-bootstrap'; 
 import ProductDetail from "./ProductDetail";
 import { Helmet } from "react-helmet";
 import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import AppDataContext from "./components/context/appState";
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 const CustomCarousel = ({ images }) => {
@@ -44,15 +45,26 @@ const CustomCarousel = ({ images }) => {
 const CategoryPage = () => {
   const history = useHistory(); 
   const { title } = useParams();
+
+  const {
+    allCategories,
+    fetchAllCategories,
+    allProducts,
+    fetchAllProducts
+  } = useContext(AppDataContext);
+
   const [category, setCategory] = useState(null);
   const [products, setProducts] = useState([]);
   const [selectedProductImages, setSelectedProductImages] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
-    axios.get("http://localhost:8000/api/dishes").then((res) => {
-      const found = res.data.find(
+    const init = async () => {
+      if (allCategories.length === 0) await fetchAllCategories();
+      if (allProducts.length === 0) await fetchAllProducts();
+
+      const found = allCategories.find(
         (cat) => cat.title.toLowerCase() === title.toLowerCase()
       );
 
@@ -67,17 +79,16 @@ const [selectedProduct, setSelectedProduct] = useState(null);
       setCategory(found);
 
       if (found && found._id) {
-        axios.get("http://localhost:8000/api/products").then((productRes) => {
-          const filtered = productRes.data.filter(
-            (prod) => prod.category?._id === found._id
-          );
-          setProducts(filtered);
-        });
+        const filtered = allProducts.filter(
+          (prod) => prod.category?._id === found._id
+        );
+        setProducts(filtered);
       }
-    });
+    };
 
+    init();
     window.scrollTo(0, 0);
-  }, [title]);
+  }, [title, allCategories, allProducts]);
 
   if (!category) {
     return (

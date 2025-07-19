@@ -2,11 +2,13 @@ import React, { useState, useContext, useEffect } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import AppContext from "./components/context/appContext";
+import AppDataContext from "./components/context/appState";
 
 const CheckoutPage = () => {
   const { cartItems, clearCart } = useContext(AppContext);
   const [showSummary, setShowSummary] = useState(false);
   const history = useHistory();
+const { submitOrder } = useContext(AppDataContext);
 
   useEffect(() => {
     if (!cartItems || cartItems.length === 0) {
@@ -35,48 +37,22 @@ const CheckoutPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
- const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault();
-  const orderData = {
-    ...formData,
-    cartItems: cartItems.map(item => ({
-      title: item.product.title,
-      price: item.product.price,
-      quantity: item.quantity,
-      image: item.product.images[0],
-    })),
-    total: (total + 100).toFixed(2),
-    subtotal: total.toFixed(2),
-    shipping: 100,
-  };
-
-  try {
-    const res = await fetch("http://localhost:8000/api/order", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(orderData),
+  await submitOrder(formData, cartItems, total, () => {
+    clearCart();
+    setFormData({
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      address: "",
+      city: "",
+      postalCode: "",
+      shippingmethod: "Pakistan",
+      paymentMethod: "Cash on Delivery",
     });
-    if (res.ok) {
-      toast.success("Order placed successfully!");
-       clearCart();
-      setFormData({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: "",
-        address: "",
-        city: "",
-        postalCode: "",
-        shippingmethod: "Pakistan",
-        paymentMethod: "Cash on Delivery",
-      });
-     
-    } else {
-      toast.error("Could not send confirmation email.");
-    }
-  } catch (err) {
-    toast.error("Error placing order.");
-  }
+  });
 };
 
   return (

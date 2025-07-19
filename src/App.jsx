@@ -3,10 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { Switch, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import CheckoutPage from './CheckoutPage';
-import DynamicMeta from './DynamicMeta';
 import About from './About';
 import ProductDetail from './ProductDetail';
 import 'react-toastify/dist/ReactToastify.css';
+import AppState from './components/context/appState';
 import Home from './Home';
 import Dashboard from './Dashboard';
 import Admin from './Admin';
@@ -42,7 +42,8 @@ const hidefooter=[
     "/viewcategory",
     "/createproduct",
     "/viewproduct",
-    "/checkout"
+    "/checkout",
+  
   ].some((path) => location.pathname.toLowerCase().startsWith(path));
 
   if (loading) {

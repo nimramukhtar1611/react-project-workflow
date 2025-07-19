@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState ,useContext} from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
-
+import AppDataContext from "./context/appState";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from "react-toastify";
 const Menuedit = () => {
@@ -12,6 +12,7 @@ const Menuedit = () => {
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+const { addCategory } = useContext(AppDataContext);
 
   const handleFormChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -41,72 +42,44 @@ const Menuedit = () => {
   };
 
 const handleSubmit = async (e) => {
-  console.log("Form Submitted");
   e.preventDefault();
   setSuccess("");
   setError("");
 
-  // Validation: Check for required fields
-  if (!form.title.trim()) {
-    toast.error("Title is required!");
-    return;
-  }
-
-  if (!form.desc.trim()) {
-    toast.error("Description is required!");
-    return;
-  }
-
-  if (!form.price.trim()) {
-    toast.error("Price is required!");
-    return;
-  }
+  if (!form.title.trim()) return toast.error("Title is required!");
+  if (!form.desc.trim()) return toast.error("Description is required!");
+  if (!form.price.trim()) return toast.error("Price is required!");
 
   const hasValidImageUrl = imageUrls.some((url) => url.trim() !== "");
   const hasSelectedFile = selectedFiles.some((file) => file);
 
   if (!hasValidImageUrl && !hasSelectedFile) {
-    toast.error("At least one image is required!");
-    return;
+    return toast.error("At least one image is required!");
   }
-
-  setLoading(true); 
 
   const formData = new FormData();
   formData.append("title", form.title);
   formData.append("desc", form.desc);
   formData.append("price", form.price);
+  if (form.metaTitle) formData.append("metaTitle", form.metaTitle);
+  if (form.metaDescription) formData.append("metaDescription", form.metaDescription);
 
   imageUrls.forEach((url) => {
-    if (url.trim()) {
-      formData.append("imageUrls", url);
-    }
+    if (url.trim()) formData.append("imageUrls", url);
   });
 
   selectedFiles.forEach((file) => {
-    if (file) {
-      formData.append("images", file);
-    }
+    if (file) formData.append("images", file);
   });
 
-  try {
-    await axios.post("http://localhost:8000/api/dishes", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+  await addCategory(formData);
 
-    toast.success("Category added successfully!");
-    setForm({ title: "", desc: "", price: "" });
-    setImageUrls([""]);
-    setFileInputs([null]);
-    setSelectedFiles([]);
-  } catch (err) {
-    toast.error(err.response?.data?.error || "Failed to add category");
-  } finally {
-    setLoading(false);
-  }
+  setForm({ title: "", desc: "", price: "", metaTitle: "", metaDescription: "" });
+  setImageUrls([""]);
+  setFileInputs([null]);
+  setSelectedFiles([]);
 };
+
 
   return (
     <div className="container py-4">

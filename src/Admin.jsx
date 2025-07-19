@@ -1,40 +1,21 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import AppDataContext from "./components/context/appState";
 function Admin() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const history = useHistory();
+  const { loginAdmin } = useContext(AppDataContext);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    try {
-      const res = await axios.post("http://localhost:8000/api/auth/login", {
-        username,
-        password,
-      });
-
-      if (res.data.success) {
-        localStorage.setItem("isAuthenticated", "true");
-        toast.success("Login successful! Redirecting...");
-        setTimeout(() => {
-          history.push("/dashboard");
-        }, 1500); // wait 1.5 seconds before redirecting
-      } else {
-        toast.error("Invalid credentials");
-      }
-
-    } catch (err) {
-      if (err.response && err.response.data && err.response.data.msg) {
-        toast.error(err.response.data.msg);
-      } else {
-        toast.error("Something went wrong!");
-      }
-    }
+    loginAdmin(username, password, () => {
+      setTimeout(() => {
+        history.push("/dashboard");
+      }, 1500);
+    });
   };
 
   return (
@@ -75,11 +56,9 @@ function Admin() {
         </button>
       </form>
 
-      {/* Toast notifications container */}
       <ToastContainer position="top-center" autoClose={2000} />
     </div>
   );
 }
 
 export default Admin;
-

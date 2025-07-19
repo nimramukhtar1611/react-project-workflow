@@ -278,23 +278,22 @@ border:"1px solid black",
     width: "100%",
   }}
 >
-  <div > <button
-  onClick={() => removeFromCart(item.product._id)}
-  style={{
-    position: "absolute",
-    top: isMobile ? "1px" : "2px",
-    right: "0px", 
-    background: "transparent",
-    border: "none",
-    fontSize: "1.5rem",
-    color: "#999",
-    cursor: "pointer",
-  }}
-  title="Remove"
->
-  &times;
-</button> 
+ <div style={{ position: "absolute", top: "5px", right: "5px", zIndex: 2 }}>
+  <button
+    onClick={() => removeFromCart(item.product._id)}
+    style={{
+      background: "transparent",
+      border: "none",
+      fontSize: "1.5rem",
+      color: "#999",
+      cursor: "pointer",
+    }}
+    title="Remove"
+  >
+    &times;
+  </button>
 </div>
+
 
       {/* Image */}
       <img

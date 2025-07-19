@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useContext, useState } from "react";
+import AppDataContext from "./context/appState";
 import { toast, ToastContainer } from "react-toastify";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
@@ -7,36 +7,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const CarouselEdit = () => {
-  const [carouselImages, setCarouselImages] = useState([]);
+  const {
+    carouselImages,
+    deleteCarouselImage,
+    uploadCarouselImages,
+  } = useContext(AppDataContext);
+
   const [showModal, setShowModal] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([null]);
-
-  const fetchCarousel = async () => {
-    try {
-      const res = await axios.get("http://localhost:8000/api/home");
-      if (res.data?.carouselImages) {
-        setCarouselImages(res.data.carouselImages);
-      }
-    } catch {
-      toast.error("Failed to load carousel");
-    }
-  };
-
-  useEffect(() => {
-    fetchCarousel();
-  }, []);
-
-  const handleDelete = async (url) => {
-    try {
-      const res = await axios.put("http://localhost:8000/api/home/delete-image", {
-        imageUrl: url,
-      });
-      toast.success("Image deleted");
-      setCarouselImages(res.data.data);
-    } catch {
-      toast.error("Delete failed");
-    }
-  };
 
   const handleFileChange = (e, idx) => {
     const file = e.target.files[0];
@@ -52,28 +30,14 @@ const CarouselEdit = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validFiles = selectedFiles.filter((file) => file !== null);
-
     if (validFiles.length === 0) {
       toast.error("Please upload at least one image");
       return;
     }
 
-    const formData = new FormData();
-    validFiles.forEach((file) => {
-      formData.append("images", file);
-    });
-
-    try {
-      await axios.post("http://localhost:8000/api/home", formData, {
-  timeout: 60000 
-});
-      toast.success("Carousel updated!");
-      setShowModal(false);
-      setSelectedFiles([null]);
-      fetchCarousel();
-    } catch {
-      toast.error("Update failed!");
-    }
+    await uploadCarouselImages(validFiles);
+    setShowModal(false);
+    setSelectedFiles([null]);
   };
 
   return (
@@ -86,7 +50,7 @@ const CarouselEdit = () => {
           <div key={idx} className="position-relative">
             <img src={img} alt="carousel" height={100} className="rounded" />
             <button
-              onClick={() => handleDelete(img)}
+              onClick={() => deleteCarouselImage(img)}
               className="btn btn-sm btn-danger position-absolute top-0 end-0"
               style={{ transform: "translate(50%, -50%)" }}
             >

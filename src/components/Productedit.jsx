@@ -1,21 +1,24 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState, useContext,useEffect } from "react";
+import AppDataContext from "./context/appState";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from "react-toastify";
+
 const Productedit = () => {
+  const {
+    allCategories,
+    fetchAllCategories,
+    addProduct,
+    loading,
+  } = useContext(AppDataContext);
+
   const [form, setForm] = useState({ title: "", desc: "", price: "", category: "" });
   const [imageUrls, setImageUrls] = useState([""]);
   const [fileInputs, setFileInputs] = useState([null]);
   const [selectedFiles, setSelectedFiles] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [success, setSuccess] = useState("");
-  const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
-  
-const [fileInputRefs, setFileInputRefs] = useState([React.createRef()]);
+  const [fileInputRefs, setFileInputRefs] = useState([React.createRef()]);
 
   useEffect(() => {
-    axios.get("http://localhost:8000/api/dishes").then((res) => setCategories(res.data));
+    fetchAllCategories();
   }, []);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
@@ -25,12 +28,12 @@ const [fileInputRefs, setFileInputRefs] = useState([React.createRef()]);
     updated[index] = value;
     setImageUrls(updated);
   };
-  const addMoreUrlField = () => setImageUrls([...imageUrls, ""]);
 
-const addMoreFileField = () => {
-  setFileInputs([...fileInputs, null]);
-  setFileInputRefs([...fileInputRefs, React.createRef()]);
-};
+  const addMoreUrlField = () => setImageUrls([...imageUrls, ""]);
+  const addMoreFileField = () => {
+    setFileInputs([...fileInputs, null]);
+    setFileInputRefs([...fileInputRefs, React.createRef()]);
+  };
 
   const handleSingleFileChange = (e, index) => {
     const file = e.target.files[0];
@@ -41,82 +44,35 @@ const addMoreFileField = () => {
     }
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setSuccess("");
-  setError("");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  // ✅ Validation first, loader baad may!
-  if (!form.title.trim()) {
-    toast.error("Title is required!");
-    return;
-  }
-  if (!form.desc.trim()) {
-    toast.error("Description is required!");
-    return;
-  }
-  if (!form.price.trim()) {
-    toast.error("Price is required!");
-    return;
-  }
-  if (!form.category.trim()) {
-    toast.error("Category is required!");
-    return;
-  }
+    // Validation
+    if (!form.title.trim()) return toast.error("Title is required!");
+    if (!form.desc.trim()) return toast.error("Description is required!");
+    if (!form.price.trim()) return toast.error("Price is required!");
+    if (!form.category.trim()) return toast.error("Category is required!");
 
-  const hasValidImageUrl = imageUrls.some((url) => url.trim() !== "");
-  const hasSelectedFile = selectedFiles.some((file) => file);
+    const hasValidImageUrl = imageUrls.some((url) => url.trim() !== "");
+    const hasSelectedFile = selectedFiles.some((file) => file);
 
-  if (!hasValidImageUrl && !hasSelectedFile) {
-    toast.error("At least one image (URL or file) is required!");
-    return;
-  }
-
-  // ✅ Loader yahan hona chahiye, sab validation pass hone k baad
-  setLoading(true);
-
-  const formData = new FormData();
-  formData.append("title", form.title);
-  formData.append("desc", form.desc);
-  formData.append("price", form.price);
-  formData.append("category", form.category);
-
-  imageUrls.forEach((url) => {
-    if (url.trim()) {
-      formData.append("imageUrls", url);
+    if (!hasValidImageUrl && !hasSelectedFile) {
+      return toast.error("At least one image (URL or file) is required!");
     }
-  });
 
-  selectedFiles.forEach((file) => {
-    if (file) {
-      formData.append("images", file);
-    }
-  });
+    const resetForm = () => {
+      setForm({ title: "", desc: "", price: "", category: "" });
+      setImageUrls([""]);
+      setFileInputs([null]);
+      setSelectedFiles([]);
+    };
 
-  try {
-    await axios.post("http://localhost:8000/api/products", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-
-    toast.success("Product added successfully!");
-    setForm({ title: "", desc: "", price: "", category: "" });
-    setImageUrls([""]);
-    setFileInputs([null]);
-    setSelectedFiles([]);
-  } catch (err) {
-    toast.error(err.response?.data?.error || "Failed to add product");
-  } finally {
-    setLoading(false);
-  }
-};
+    addProduct(form, imageUrls, selectedFiles, resetForm);
+  };
 
   return (
     <div className="container py-4">
       <h2 style={{ color: "#E1AD01" }}>🛠️ Admin Panel: Add New Product</h2>
-      {success && <div className="alert alert-success">{success}</div>}
-      {error && <div className="alert alert-danger">{error}</div>}
       <form onSubmit={handleSubmit}>
         <label className="form-label">Product Title</label>
         <input name="title" value={form.title} onChange={handleChange} className="form-control mb-2" />
@@ -130,7 +86,7 @@ const handleSubmit = async (e) => {
         <label className="form-label">Category</label>
         <select name="category" value={form.category} onChange={handleChange} className="form-control mb-3">
           <option value="">Select Category</option>
-          {categories.map((cat) => (
+          {allCategories.map((cat) => (
             <option key={cat._id} value={cat._id}>
               {cat.title}
             </option>
@@ -144,7 +100,7 @@ const handleSubmit = async (e) => {
             <input
               type="file"
               accept="image/*"
-                 ref={fileInputRefs[idx]} 
+              ref={fileInputRefs[idx]}
               className="form-control me-2"
               onChange={(e) => handleSingleFileChange(e, idx)}
             />
@@ -162,23 +118,24 @@ const handleSubmit = async (e) => {
         </button>
 
         {loading ? (
-              <div className="text-center my-3">
-                <div className="spinner-border text-warning" role="status">
-                  <span className="visually-hidden">Loading...</span>
-                </div>
-              </div>
-            ) : (
-              <button
-                type="submit"
-                className="btn w-100"
-                style={{ backgroundColor: "#E1AD01", color: "#000" }}
-              >
-                Add Product
-              </button>  )}
+          <div className="text-center my-3">
+            <div className="spinner-border text-warning" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        ) : (
+          <button
+            type="submit"
+            className="btn w-100"
+            style={{ backgroundColor: "#E1AD01", color: "#000" }}
+          >
+            Add Product
+          </button>
+        )}
       </form>
-                <ToastContainer position="top-right" autoClose={3000} />
-      
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
-}
+};
+
 export default Productedit;

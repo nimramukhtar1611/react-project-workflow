@@ -1,65 +1,22 @@
-import { useEffect, useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer, toast } from 'react-toastify';
+import React, { useContext, useState, useEffect } from "react";
+import AppDataContext from "./context/appState";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { ToastContainer } from "react-toastify";
 
-function Meta() {
-  const [meta, setMeta] = useState({ title: '', description: '' });
+const Meta = () => {
+  const { metaData, updateMetaData, setMetaData } = useContext(AppDataContext);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchMeta = async () => {
-      try {
-        const res = await fetch('http://localhost:8000/api/meta');
-        const data = await res.json();
-
-        if (data && data.title && data.description) {
-          setMeta({ title: data.title, description: data.description });
-        } else {
-          const defaultMeta = { title: 'My Title', description: 'My Description' };
-          const postRes = await fetch('http://localhost:8000/api/meta', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(defaultMeta),
-          });
-
-          const savedData = await postRes.json();
-          setMeta(savedData.meta || defaultMeta);
-        }
-      } catch (err) {
-        console.error('Error handling metadata:', err);
-      }
-    };
-
-    fetchMeta();
-  }, []);
-
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setMeta(prev => ({ ...prev, [name]: value }));
+    setMetaData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
-    try {
-      const res = await fetch('http://localhost:8000/api/meta', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(meta),
-      });
-
-      const result = await res.json();
-      setMeta(result?.meta || meta);
-
-      toast.success(result.message || 'Meta data updated successfully!');
-    } catch (error) {
-      console.error('Submit error:', error);
-      toast.error('Failed to update meta data.');
-    } finally {
-      setLoading(false);
-    }
+    await updateMetaData(metaData);
+    setLoading(false);
   };
 
   return (
@@ -67,7 +24,9 @@ function Meta() {
       <ToastContainer />
       <div className="row">
         <div className="col-12">
-          <h2 style={{ color: '#E1AD01', marginBottom: '20px' }}>🛠️ Admin Panel: Update Home Meta Info</h2>
+          <h2 style={{ color: "#E1AD01", marginBottom: "20px" }}>
+            🛠️ Admin Panel: Update Home Meta Info
+          </h2>
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label className="form-label">Meta Title</label>
@@ -75,7 +34,7 @@ function Meta() {
                 type="text"
                 className="form-control"
                 name="title"
-                value={meta.title}
+                value={metaData.title}
                 onChange={handleChange}
                 required
               />
@@ -87,7 +46,7 @@ function Meta() {
                 className="form-control"
                 name="description"
                 rows="4"
-                value={meta.description}
+                value={metaData.description}
                 onChange={handleChange}
                 required
               />
@@ -96,7 +55,7 @@ function Meta() {
             <button
               type="submit"
               className="btn w-100 d-flex justify-content-center align-items-center"
-              style={{ backgroundColor: '#E1AD01', color: '#000' }}
+              style={{ backgroundColor: "#E1AD01", color: "#000" }}
               disabled={loading}
             >
               {loading ? (
@@ -109,7 +68,7 @@ function Meta() {
                   Updating...
                 </>
               ) : (
-                'Update Meta'
+                "Update Meta"
               )}
             </button>
           </form>
@@ -117,6 +76,6 @@ function Meta() {
       </div>
     </div>
   );
-}
+};
 
 export default Meta;

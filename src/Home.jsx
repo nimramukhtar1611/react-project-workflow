@@ -55,7 +55,8 @@ const Home = ({ setLoading })  => {
   return (
     <div style={{ overflowX: 'hidden', width: '100%', backgroundColor: '#f6f7fa' }}>
       <div className="container-fluid p-0 m-0">
-        <div><Story /></div>
+        <div>
+<Story/>
         <Menu />
         <Chef />
         <Moment />
@@ -65,6 +66,7 @@ const Home = ({ setLoading })  => {
         <Offer />
         <Guests />
         <Reservation />
+      </div>
       </div>
     </div>
   );

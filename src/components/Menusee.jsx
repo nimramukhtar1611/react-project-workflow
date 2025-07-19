@@ -1,106 +1,73 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
+import AppDataContext from "./context/appState";
 
 const Menusee = () => {
-  const [dishes, setDishes] = useState([]);
-  const [editDish, setEditDish] = useState(null);
   const [loadingUpdate, setLoadingUpdate] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newDesc, setNewDesc] = useState("");
   const [newPrice, setNewPrice] = useState("");
-    const [newmetatitle, setnewmetatitle] = useState("");
-      const [newmetadescription, setnewmetadescription] = useState("");
+  const [newmetatitle, setnewmetatitle] = useState("");
+  const [newmetadescription, setnewmetadescription] = useState("");
   const [fileInputs, setFileInputs] = useState([0]);
   const [newImageUrls, setNewImageUrls] = useState([""]);
   const [newFiles, setNewFiles] = useState([]);
   const [previewImages, setPreviewImages] = useState([]);
   const [showModal, setShowModal] = useState(false);
-const [showDeleteModal, setShowDeleteModal] = useState(false);
-const [selectedDeleteId, setSelectedDeleteId] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedDeleteId, setSelectedDeleteId] = useState(null);
 
-  const fetchDishes = async () => {
-    try {
-      const res = await axios.get("http://localhost:8000/api/removedishes");
-      setDishes(res.data);
-    } catch (error) {
-      toast.error("Failed to fetch");
-      console.error("Fetch Error:", error);
-    }
-  };
+  const {
+    dishes,
+    fetchDishes,
+    deleteDish,
+    updateDish,
+    setEditDish,
+    editDish,
+  } = useContext(AppDataContext);
 
   useEffect(() => {
     fetchDishes();
   }, []);
 
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`http://localhost:8000/api/removedishes/${id}`);
-      fetchDishes();
-    } catch (err) {
-      console.error("Delete Error:", err);
-      toast.error("Failed to delete");
-    }
-  };
-
   const handleEdit = (dish) => {
     setEditDish(dish);
     setNewTitle(dish.title);
-    setnewmetadescription(dish.metaDescription)
-    setnewmetatitle(dish.metaTitle)
+    setnewmetatitle(dish.metaTitle);
+    setnewmetadescription(dish.metaDescription);
     setNewDesc(dish.desc);
     setNewPrice(dish.price);
-  setPreviewImages(Array.isArray(dish.images) ? dish.images : []);
+    setPreviewImages(Array.isArray(dish.images) ? dish.images : []);
     setNewImageUrls([""]);
     setNewFiles([]);
     setShowModal(true);
   };
 
-const handleUpdate = async () => {
-  setLoadingUpdate(true);
-  try {
-    const formData = new FormData();
-    formData.append("title", newTitle);
-    formData.append("desc", newDesc);
-    formData.append("price", newPrice);
-        formData.append("metaTitle", newmetatitle);
-formData.append("metaDescription", newmetadescription);
+  const handleUpdate = async () => {
+    setLoadingUpdate(true);
+    try {
+      const formData = new FormData();
+      formData.append("title", newTitle);
+      formData.append("desc", newDesc);
+      formData.append("price", newPrice);
+      formData.append("metaTitle", newmetatitle);
+      formData.append("metaDescription", newmetadescription);
 
+      previewImages.forEach((url) => formData.append("existingImages", url));
+      newImageUrls.forEach((url) => url.trim() && formData.append("imageUrls", url));
+      newFiles.forEach((file) => file && formData.append("images", file));
 
-    previewImages.forEach((url) => {
-      formData.append("existingImages", url);
-    });
-
-    newImageUrls.forEach((url) => {
-      if (url.trim()) formData.append("imageUrls", url);
-    });
-
-    newFiles.forEach((file) => {
-      if (file) formData.append("images", file);
-    });
-
-    await axios.put(
-      `http://localhost:8000/api/removedishes/${editDish._id}`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-
-    setLoadingUpdate(false);
-    setShowModal(false);
-    fetchDishes();
-    toast.success("Category successfully updated!");
-  } catch (error) {
-    console.error("Update Error:", error);
-    setLoadingUpdate(false);
-    toast.error(" Failed to update");
-  }
-};
+      await updateDish(editDish._id, formData, () => {
+        setShowModal(false);
+        setLoadingUpdate(false);
+      });
+    } catch (error) {
+      setLoadingUpdate(false);
+    }
+  };
 
   const handleUrlChange = (index, value) => {
     const updated = [...newImageUrls];
@@ -159,60 +126,60 @@ formData.append("metaDescription", newmetadescription);
                   >
                     ✏️
                   </button>
-                 <button
-  className="btn btn-sm btn-outline-danger"
-  onClick={() => {
-    setSelectedDeleteId(dish._id);
-    setShowDeleteModal(true);
-  }}
->
-  🗑️
-</button>
-
+                  <button
+                    className="btn btn-sm btn-outline-danger"
+                    onClick={() => {
+                      setSelectedDeleteId(dish._id);
+                      setShowDeleteModal(true);
+                    }}
+                  >
+                    🗑️
+                  </button>
                 </div>
-                {showDeleteModal && (
-  <div className="modal show d-block bg-dark" tabIndex="-1">
-    <div className="modal-dialog">
-      <div className="modal-content">
-        <div className="modal-header bg-danger text-white">
-          <h5 className="modal-title">Confirm Delete</h5>
-          <button
-            type="button"
-            className="btn-close btn-close-white"
-            onClick={() => setShowDeleteModal(false)}
-          ></button>
-        </div>
-        <div className="modal-body">
-          <p>Are you sure you want to delete this product?</p>
-        </div>
-        <div className="modal-footer">
-          <button
-            className="btn btn-secondary"
-            onClick={() => setShowDeleteModal(false)}
-          >
-            Cancel
-          </button>
-          <button
-            className="btn btn-danger"
-            onClick={async () => {
-              await handleDelete(selectedDeleteId);
-              setShowDeleteModal(false);
-            }}
-          >
-            Delete
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-)}
 
+                {showDeleteModal && (
+                  <div className="modal show d-block bg-dark" tabIndex="-1">
+                    <div className="modal-dialog">
+                      <div className="modal-content">
+                        <div className="modal-header bg-danger text-white">
+                          <h5 className="modal-title">Confirm Delete</h5>
+                          <button
+                            type="button"
+                            className="btn-close btn-close-white"
+                            onClick={() => setShowDeleteModal(false)}
+                          ></button>
+                        </div>
+                        <div className="modal-body">
+                          <p>Are you sure you want to delete this product?</p>
+                        </div>
+                        <div className="modal-footer">
+                          <button
+                            className="btn btn-secondary"
+                            onClick={() => setShowDeleteModal(false)}
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            className="btn btn-danger"
+                            onClick={async () => {
+                              await deleteDish(selectedDeleteId);
+                              setShowDeleteModal(false);
+                            }}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
         ))}
       </div>
 
+      {/* Edit Modal */}
       {showModal && (
         <div className="modal show d-block" tabIndex="-1">
           <div className="modal-dialog modal-lg">
@@ -226,16 +193,14 @@ formData.append("metaDescription", newmetadescription);
                 ></button>
               </div>
               <div className="modal-body">
-                      <h5 style={{ color: "#E1AD01" }}> Title</h5>
-
+                <h5 style={{ color: "#E1AD01" }}> Title</h5>
                 <input
                   className="form-control mb-2"
                   placeholder="Title"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
                 />
-                                      <h5 style={{ color: "#E1AD01" }}> Description</h5>
-
+                <h5 style={{ color: "#E1AD01" }}> Description</h5>
                 <textarea
                   className="form-control mb-2"
                   rows={2}
@@ -243,58 +208,56 @@ formData.append("metaDescription", newmetadescription);
                   value={newDesc}
                   onChange={(e) => setNewDesc(e.target.value)}
                 />
-                                                      <h5 style={{ color: "#E1AD01" }}> Price</h5>
-
+                <h5 style={{ color: "#E1AD01" }}> Price</h5>
                 <input
                   className="form-control mb-3"
                   placeholder="Price"
                   value={newPrice}
                   onChange={(e) => setNewPrice(e.target.value)}
                 />
- <h5 style={{ color: "#E1AD01" }}> Meta Title</h5>
-
-                 <input
+                <h5 style={{ color: "#E1AD01" }}> Meta Title</h5>
+                <input
                   className="form-control mb-3"
-                  placeholder="meta title"
+                  placeholder="Meta Title"
                   value={newmetatitle}
                   onChange={(e) => setnewmetatitle(e.target.value)}
-                />                                                                                            <h5 style={{ color: "#E1AD01" }}> Meta Description</h5>
- <textarea
+                />
+                <h5 style={{ color: "#E1AD01" }}> Meta Description</h5>
+                <textarea
                   className="form-control mb-2"
                   rows={2}
-                  placeholder="meta Description"
+                  placeholder="Meta Description"
                   value={newmetadescription}
                   onChange={(e) => setnewmetadescription(e.target.value)}
                 />
-               
-              <h6>Current Images:</h6>
-<div className="d-flex flex-wrap mb-3">
-  {previewImages && previewImages.length > 0 ? (
-    previewImages.map((img, idx) => (
-      <div key={idx} className="position-relative me-2 mb-2">
-        <img
-          src={img}
-          alt={`preview-${idx}`}
-          style={{
-            height: 70,
-            width: 70,
-            objectFit: "cover",
-            borderRadius: 5,
-          }}
-        />
-        <button
-          className="btn btn-sm btn-danger position-absolute top-0 end-0"
-          onClick={() => removePreviewImage(img)}
-        >
-          ❌
-        </button>
-      </div>
-    ))
-  ) : (
-    <p className="text-muted">No current images</p>
-  )}
-</div>
 
+                <h6>Current Images:</h6>
+                <div className="d-flex flex-wrap mb-3">
+                  {previewImages.length > 0 ? (
+                    previewImages.map((img, idx) => (
+                      <div key={idx} className="position-relative me-2 mb-2">
+                        <img
+                          src={img}
+                          alt={`preview-${idx}`}
+                          style={{
+                            height: 70,
+                            width: 70,
+                            objectFit: "cover",
+                            borderRadius: 5,
+                          }}
+                        />
+                        <button
+                          className="btn btn-sm btn-danger position-absolute top-0 end-0"
+                          onClick={() => removePreviewImage(img)}
+                        >
+                          ❌
+                        </button>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-muted">No current images</p>
+                  )}
+                </div>
 
                 <h6>Upload Images:</h6>
                 {fileInputs.map((inputId, idx) => (
@@ -314,28 +277,21 @@ formData.append("metaDescription", newmetadescription);
                   ➕ Add More Files
                 </button>
               </div>
+
               <div className="modal-footer">
                 <button className="btn btn-secondary" onClick={() => setShowModal(false)}>
                   Cancel
                 </button>
-               <div className="modal-footer">
-  
-  <button className="btn btn-warning" onClick={handleUpdate} disabled={loadingUpdate}>
-    {loadingUpdate ? (
-      <>
-        <span
-          className="spinner-border spinner-border-sm me-2"
-          role="status"
-          aria-hidden="true"
-        ></span>
-        Updating...
-      </>
-    ) : (
-      "Save Changes"
-    )}
-  </button>
-</div>
-
+                <button className="btn btn-warning" onClick={handleUpdate} disabled={loadingUpdate}>
+                  {loadingUpdate ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2"></span>
+                      Updating...
+                    </>
+                  ) : (
+                    "Save Changes"
+                  )}
+                </button>
               </div>
             </div>
           </div>

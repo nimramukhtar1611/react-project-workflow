@@ -1,25 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import AppDataContext from "./context/appState";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
-import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Contact = () => {
-  const [loading, setLoading] = useState(false);
+  const {
+    contactData,
+    setContactData,
+    fetchContactData,
+    loading,
+        updateContactData,
+    setLoading,
+  } = useContext(AppDataContext);
+
   const [formData, setFormData] = useState({
     email: "",
     phone: "",
-    address: ""
+    address: "",
   });
 
+  // Load contact data into form when available
   useEffect(() => {
-    axios
-      .get("http://localhost:8000/api/contact")
-      .then((res) => {
-        if (res.data) setFormData(res.data);
-      })
-      .catch((err) => console.log(err));
-  }, []);
+    if (contactData) {
+      setFormData(contactData);
+    }
+  }, [contactData]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -27,16 +34,7 @@ const Contact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // Start loader
-    try {
-      await axios.put("http://localhost:8000/api/contact/update", formData);
-      toast.success("Contact info updated!");
-    } catch (err) {
-      console.log(err);
-      toast.error("Failed to update contact info.");
-    } finally {
-      setLoading(false); // Stop loader
-    }
+    await updateContactData(formData);
   };
 
   return (
