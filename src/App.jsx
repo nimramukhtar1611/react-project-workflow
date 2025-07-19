@@ -15,6 +15,7 @@ import Viewcategory from './Viewcategory';
 import Createproduct from './Createproduct';
 import CategoryPage from './CategoryPage';
 import ViewProduct from './ViewProduct';
+import Footer from './components/Footer';
 import './App.css';
 
 function App() {
@@ -26,14 +27,22 @@ function App() {
     const timer = setTimeout(() => setLoading(false), 1000); // 1 second delay
     return () => clearTimeout(timer);
   }, []);
-
+const hidefooter=[
+ "/admin",
+    "/dashboard",
+    "/createcategory",
+    "/viewcategory",
+    "/createproduct",
+    "/viewproduct",
+    "/checkout"].some((path) => location.pathname.toLowerCase().startsWith(path));
   const hideNavbar = [
     "/admin",
     "/dashboard",
     "/createcategory",
     "/viewcategory",
     "/createproduct",
-    "/viewproduct"
+    "/viewproduct",
+    "/checkout"
   ].some((path) => location.pathname.toLowerCase().startsWith(path));
 
   if (loading) {
@@ -68,7 +77,7 @@ function App() {
     <div style={{ fontFamily: "'Poppins', sans-serif", backgroundColor: "#f7f7f7" }}>
       {!hideNavbar && <Navbar />}
       <Switch>
-        <Route exact path="/" component={Home} />
+ <Route exact path="/" render={() => <Home setLoading={setLoading} />}/>
         <Route exact path="/about" component={About} />
         <Route exact path="/admin" component={Admin} />
         <Route exact path="/dashboard" component={Dashboard} />
@@ -80,6 +89,7 @@ function App() {
         <Route exact path="/createproduct" component={Createproduct} />
         <Route exact path="/viewproduct" component={ViewProduct} />
       </Switch>
+     {!hidefooter  && <Footer/>} 
     </div>
   );
 }

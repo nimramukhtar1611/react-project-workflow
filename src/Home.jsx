@@ -9,13 +9,11 @@ import Moment from './components/Moment';
 import Offer from './components/Offer';
 import Visit from './components/Visit';
 import Reservation from './components/Reservation';
-import Footer from './components/Footer';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { toast } from 'react-toastify';
 
-const Home = () => {
+const Home = ({ setLoading })  => {
   const [meta, setMeta] = useState({ title: '', description: '' });
-  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
     const fetchMeta = async () => {
@@ -36,7 +34,7 @@ const Home = () => {
     };
 
     fetchMeta();
-  }, []);
+  }, [setLoading]);
 
   useEffect(() => {
     if (meta.title) {
@@ -53,33 +51,6 @@ const Home = () => {
     }
   }, [meta]);
 
-  if (loading) {
-    return (
-      <div
-      style={{
-        height: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "#f6f7fa",
-      }}
-    >
-      <div
-        style={{
-          color: "#E1AD01",
-          fontWeight: "bold",
-          letterSpacing: "3px",
-          fontSize: "clamp(2.5rem, 8vw, 5rem)",
-          fontFamily: "'Playfair Display', serif",
-          textAlign: "center",
-          textShadow: "2px 2px 5px rgba(0,0,0,0.6)",
-        }}
-      >
-        AURUM...
-      </div>
-      </div>
-    );
-  }
 
   return (
     <div style={{ overflowX: 'hidden', width: '100%', backgroundColor: '#f6f7fa' }}>
@@ -94,7 +65,6 @@ const Home = () => {
         <Offer />
         <Guests />
         <Reservation />
-        <Footer />
       </div>
     </div>
   );

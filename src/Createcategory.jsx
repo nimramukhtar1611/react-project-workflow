@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from './components/Sidebars'
 import { ToastContainer } from "react-toastify";
-import Meta from './components/Meta'
 import Menuedit from './components/Menuedit'
 const Createcategory = () => {
   const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
@@ -41,7 +40,10 @@ const Createcategory = () => {
         }}
       >
         <Menuedit />
+
+
                                   <ToastContainer position="top-right" autoClose={3000} />
+
         
       </div>
     </div>

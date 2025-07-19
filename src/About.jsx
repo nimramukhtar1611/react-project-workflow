@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { FaFacebook, FaTwitter, FaInstagram, FaYoutube } from "react-icons/fa";
 import { toast } from "react-toastify";
 
-const AboutPage = () => {
+const AboutPage = ()=> {
   const [footerData, setFooterData] = useState(null);
   const [contactData, setContactData] = useState(null);
   const [error, setError] = useState("");

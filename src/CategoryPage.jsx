@@ -2,6 +2,7 @@
 import { useParams, useHistory } from "react-router-dom";
 import { Carousel } from 'react-bootstrap'; 
 import ProductDetail from "./ProductDetail";
+import { Helmet } from "react-helmet";
 import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
@@ -108,6 +109,10 @@ const [selectedProduct, setSelectedProduct] = useState(null);
 
   return (
     <>
+      <Helmet>
+        <title>{category.metaTitle || category.title}</title>
+        <meta name="description" content={category.metaDescription || category.desc} />
+      </Helmet>
       {/* Hero Section */}
       <section
         className="position-relative w-100"
@@ -181,6 +186,16 @@ const [selectedProduct, setSelectedProduct] = useState(null);
               key={product._id}
               className="col-12 col-sm-6 col-md-4 d-flex flex-column align-items-center mb-5"
             >
+              <div className="card position-relative"
+              style={{
+                backgroundColor: "#f6f7fa",
+                width: "100%",
+                maxWidth: "22rem",
+                borderRadius: "15px",
+                border: "none",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+                cursor: "pointer",
+              }}>
               <img
                 src={product.images?.[0] || "https://via.placeholder.com/360x280?text=No+Image"}
                 alt={product.title}
@@ -200,7 +215,7 @@ const [selectedProduct, setSelectedProduct] = useState(null);
                 }}
               />
 
-              <div className="mt-3 text-center" style={{ maxWidth: "360px" }}>
+              <div className="mt-3 text-center " style={{ maxWidth: "360px" }}>
                 <h5
                   className="mb-2"
                   style={{
@@ -243,6 +258,7 @@ const [selectedProduct, setSelectedProduct] = useState(null);
                     transition: "all 0.3s ease",
                     backgroundColor: "transparent",
                     color: "#E1AD01",
+                    marginBottom:"10px"
                   }}
                   onMouseEnter={(e) => {
                     e.target.style.backgroundColor = "#E1AD01";
@@ -256,7 +272,7 @@ const [selectedProduct, setSelectedProduct] = useState(null);
                   }}
  onClick={() => setSelectedProduct(product)}                >
                   Add To Cart
-                </button>
+                </button></div>
                 {selectedProduct && (
   <ProductDetail 
     product={selectedProduct} 
@@ -347,4 +363,4 @@ const [selectedProduct, setSelectedProduct] = useState(null);
   );
 };
 
-export default CategoryPage;  
+export default CategoryPage; 

@@ -67,7 +67,7 @@ function Meta() {
       <ToastContainer />
       <div className="row">
         <div className="col-12">
-          <h2 style={{ color: '#E1AD01', marginBottom: '20px' }}>🛠️ Admin Panel: Update Meta Info</h2>
+          <h2 style={{ color: '#E1AD01', marginBottom: '20px' }}>🛠️ Admin Panel: Update Home Meta Info</h2>
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label className="form-label">Meta Title</label>

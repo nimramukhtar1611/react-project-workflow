@@ -189,8 +189,14 @@ const Productsee = () => {
                 <button className="btn-close" onClick={() => setEditProduct(null)} />
               </div>
               <div className="modal-body">
+                                                      <h5 style={{ color: "#E1AD01" }}> Title</h5>
+
                 <input className="form-control mb-2" placeholder="Title" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} />
+                                                      <h5 style={{ color: "#E1AD01" }}> Description</h5>
+
                 <textarea className="form-control mb-2" placeholder="Description" value={newDesc} onChange={(e) => setNewDesc(e.target.value)} />
+                                                        <h5 style={{ color: "#E1AD01" }}>Price </h5>
+
                 <input className="form-control mb-3" placeholder="Price" value={newPrice} onChange={(e) => setNewPrice(e.target.value)} />
 
                 <h6>Current Images:</h6>

@@ -11,6 +11,8 @@ const Menusee = () => {
   const [newTitle, setNewTitle] = useState("");
   const [newDesc, setNewDesc] = useState("");
   const [newPrice, setNewPrice] = useState("");
+    const [newmetatitle, setnewmetatitle] = useState("");
+      const [newmetadescription, setnewmetadescription] = useState("");
   const [fileInputs, setFileInputs] = useState([0]);
   const [newImageUrls, setNewImageUrls] = useState([""]);
   const [newFiles, setNewFiles] = useState([]);
@@ -46,6 +48,8 @@ const [selectedDeleteId, setSelectedDeleteId] = useState(null);
   const handleEdit = (dish) => {
     setEditDish(dish);
     setNewTitle(dish.title);
+    setnewmetadescription(dish.metaDescription)
+    setnewmetatitle(dish.metaTitle)
     setNewDesc(dish.desc);
     setNewPrice(dish.price);
   setPreviewImages(Array.isArray(dish.images) ? dish.images : []);
@@ -61,6 +65,9 @@ const handleUpdate = async () => {
     formData.append("title", newTitle);
     formData.append("desc", newDesc);
     formData.append("price", newPrice);
+        formData.append("metaTitle", newmetatitle);
+formData.append("metaDescription", newmetadescription);
+
 
     previewImages.forEach((url) => {
       formData.append("existingImages", url);
@@ -219,26 +226,47 @@ const handleUpdate = async () => {
                 ></button>
               </div>
               <div className="modal-body">
+                      <h5 style={{ color: "#E1AD01" }}> Title</h5>
+
                 <input
                   className="form-control mb-2"
                   placeholder="Title"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
                 />
+                                      <h5 style={{ color: "#E1AD01" }}> Description</h5>
+
                 <textarea
                   className="form-control mb-2"
-                  rows={3}
+                  rows={2}
                   placeholder="Description"
                   value={newDesc}
                   onChange={(e) => setNewDesc(e.target.value)}
                 />
+                                                      <h5 style={{ color: "#E1AD01" }}> Price</h5>
+
                 <input
                   className="form-control mb-3"
                   placeholder="Price"
                   value={newPrice}
                   onChange={(e) => setNewPrice(e.target.value)}
                 />
+ <h5 style={{ color: "#E1AD01" }}> Meta Title</h5>
 
+                 <input
+                  className="form-control mb-3"
+                  placeholder="meta title"
+                  value={newmetatitle}
+                  onChange={(e) => setnewmetatitle(e.target.value)}
+                />                                                                                            <h5 style={{ color: "#E1AD01" }}> Meta Description</h5>
+ <textarea
+                  className="form-control mb-2"
+                  rows={2}
+                  placeholder="meta Description"
+                  value={newmetadescription}
+                  onChange={(e) => setnewmetadescription(e.target.value)}
+                />
+               
               <h6>Current Images:</h6>
 <div className="d-flex flex-wrap mb-3">
   {previewImages && previewImages.length > 0 ? (

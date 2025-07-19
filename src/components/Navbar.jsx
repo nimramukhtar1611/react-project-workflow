@@ -223,7 +223,7 @@ useEffect(() => {
     height: "100vh",
     backgroundColor: "#fff",
     boxShadow: "-2px 0 10px rgba(0,0,0,0.3)",
-    zIndex: 1050,
+    zIndex: 1150,
     transition: "right 0.3s ease-in-out",
     borderTopLeftRadius: "10px",
     borderBottomLeftRadius: "10px",
@@ -234,7 +234,7 @@ useEffect(() => {
 
        {/* Header */}
 <div style={{ display: "flex", justifyContent: "space-between", padding: "20px" }}>
-  <h3 style={{ margin: 0, fontSize: "1.2rem" }}>🛍️ Your Cart</h3>
+  <h3 style={{ margin: 0, fontSize: "1.2rem" }}> Your Cart</h3>
   <div style={{position:"relative"}}> <button
     onClick={toggleSidebar}
     style={{
@@ -262,14 +262,14 @@ useEffect(() => {
 >
  {cartItems.length > 0 ? (
   cartItems.map((item, index) => (
-  <div
+ <div
   key={index}
   style={{
     position: "relative", 
     display: "flex",
 border:"1px solid black",
     alignItems: "center",
-    gap: "15px",
+    gap: "5px",
     backgroundColor: "#f9f9f9",
     borderRadius: "10px",
     padding: "12px",
@@ -278,30 +278,31 @@ border:"1px solid black",
     width: "100%",
   }}
 >
-  <button
-    onClick={() => removeFromCart(item.product._id)}
-    style={{
-      position: "absolute",
- top: isMobile ? "1px" : "2px",
-  right: isMobile ? "45%" : "0px",
-       background: "transparent",
-      border: "none",
-      fontSize: "1.5rem",
-      color: "#999",
-      cursor: "pointer",
-    }}
-    title="Remove"
-  >
-    &times;
-  </button>
+  <div > <button
+  onClick={() => removeFromCart(item.product._id)}
+  style={{
+    position: "absolute",
+    top: isMobile ? "1px" : "2px",
+    right: "0px", 
+    background: "transparent",
+    border: "none",
+    fontSize: "1.5rem",
+    color: "#999",
+    cursor: "pointer",
+  }}
+  title="Remove"
+>
+  &times;
+</button> 
+</div>
 
       {/* Image */}
       <img
         src={item.product.images?.[0] || "https://via.placeholder.com/100"}
         alt={item.product.title}
         style={{
-          width: "70px",
-          height: "70px",
+          width: "80px",
+          height: "80px",
           borderRadius: "6px",
           objectFit: "cover",
         }}
@@ -409,9 +410,12 @@ onClick={() => {
 
 </div>
 
+<style>
+ 
+</style>
     </nav>
     </>
   );
 };
 
-export default Navbar;
+export default Navbar; 

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
+
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from "react-toastify";
 const Menuedit = () => {
@@ -152,7 +153,14 @@ const handleSubmit = async (e) => {
                 onChange={handleFormChange}
               />
             </div>
-         
+          <div className="mb-3">
+          <label className="form-label">Meta Title</label>
+          <input type="text" name="metaTitle" className="form-control" value={form.metaTitle} onChange={handleFormChange} />
+        </div>
+        <div className="mb-3">
+          <label className="form-label">Meta Description</label>
+          <textarea name="metaDescription" className="form-control" value={form.metaDescription} onChange={handleFormChange} rows={3} />
+        </div>
             {/* File inputs */}
             <div className="mb-3">
               <label className="form-label">Upload Images from Device</label>
@@ -186,7 +194,6 @@ const handleSubmit = async (e) => {
                 ➕ Add More Images
               </button>
             </div>
-
            {loading ? (
               <div className="text-center my-3">
                 <div className="spinner-border text-warning" role="status">

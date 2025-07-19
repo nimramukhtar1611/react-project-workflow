@@ -40,10 +40,10 @@ const Menu = () => {
   if (!category) return null;
 
   return (
-    <div className="container-fluid text-white bg-dark" style={{ marginTop: 15, fontFamily: "'Poppins', Arial, sans-serif" }}>
+    <div className="container-fluid text-white " style={{ backgroundColor:"#1c1c1c",marginTop: 15, fontFamily: "'Poppins', Arial, sans-serif" }}>
       <ToastContainer />
       <div className="text-center mb-5">
-        <h1 style={{ fontFamily: "'Playfair Display', serif", fontWeight: 900, marginTop: 25, color: "#E1AD01", fontSize: 45 }}>
+        <h1 style={{ fontFamily: "'Playfair Display', serif", fontWeight: 900, marginTop:2,paddingTop:20, color: "#E1AD01", fontSize: 45 }}>
           {category.title}
         </h1>
         <p style={{ color: "white", maxWidth: "650px", margin: "0 auto", lineHeight: 1.6, fontWeight: 500 }}>{category.desc}</p>
@@ -53,12 +53,13 @@ const Menu = () => {
         {products.map((product) => (
           <div key={product._id} className="col-12 col-sm-6 col-md-4 d-flex justify-content-center mb-4">
             <div
-              className="card bg-dark text-white"
+              className="card  text-white"
               style={{
                 width: "100%",
                 maxWidth: "22rem",
                 borderRadius: "15px",
                 border: "none",
+                backgroundColor:"#2b2b2b",
                 boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
                 cursor: "pointer"
               }}

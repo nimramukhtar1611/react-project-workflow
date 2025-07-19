@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useLocation, useHistory } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import AppContext from "./components/context/appContext";
 
 const CheckoutPage = () => {
@@ -35,24 +35,49 @@ const CheckoutPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    toast.success("Order placed successfully!");
-    console.log("Order submitted:", formData, cartItems);
-    clearCart();
-    setFormData({
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      address: "",
-      city: "",
-      postalCode: "",
-      shippingmethod: "Pakistan",
-      paymentMethod: "Cash on Delivery",
-    });
-    history.push("/");
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  const orderData = {
+    ...formData,
+    cartItems: cartItems.map(item => ({
+      title: item.product.title,
+      price: item.product.price,
+      quantity: item.quantity,
+      image: item.product.images[0],
+    })),
+    total: (total + 100).toFixed(2),
+    subtotal: total.toFixed(2),
+    shipping: 100,
   };
+
+  try {
+    const res = await fetch("http://localhost:8000/api/order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(orderData),
+    });
+    if (res.ok) {
+      toast.success("Order placed successfully!");
+       clearCart();
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        address: "",
+        city: "",
+        postalCode: "",
+        shippingmethod: "Pakistan",
+        paymentMethod: "Cash on Delivery",
+      });
+     
+    } else {
+      toast.error("Could not send confirmation email.");
+    }
+  } catch (err) {
+    toast.error("Error placing order.");
+  }
+};
 
   return (
     <div
@@ -122,7 +147,7 @@ const CheckoutPage = () => {
       fontFamily: "'Playfair Display', serif",
     }}
   >
-    Rs {(total + 250).toFixed(2)}
+    Rs {(total + 100).toFixed(2)}
   </span>
 </div>
 
@@ -177,28 +202,31 @@ const CheckoutPage = () => {
     >
       {item.quantity}
     </span>
-  </div>
-    <div className="mb-0" style={{ fontSize: "1.3rem", }}>
-    {item.product.title}
-  </div>
+  </div></div>
+
+ <div className="d-flex justify-content-between align-items-center mt-3">
+  <strong>{item.product.title}</strong>
+  <strong>{item.product.price}</strong>
 </div>
-
-
-
-            {/* PRICE */}
-           <div className="d-flex justify-content-between align-items-center mt-3">
-      <strong>Sub Total:</strong>
-              <strong style={{ fontSize: "1rem" }}>Rs {subtotal.toFixed(2)}</strong>
-    </div>
+      
   </div>
         </div>
       );
     })}
 
     {/* TOTAL */}
+     
     <div className="d-flex justify-content-between align-items-center mt-3">
+      <strong>Sub Total:</strong>
+              <strong style={{ fontSize: "1rem" }}>Rs {total.toFixed(2)}</strong>
+    </div>
+    <div className="d-flex justify-content-between align-items-center mt-3">
+      <strong>Shipping:</strong>
+              <strong style={{ fontSize: "1rem" }}>Rs 100</strong>
+    </div>
+      <div className="d-flex justify-content-between align-items-center mt-3">
       <strong>Total:</strong>
-      <strong>Rs {(total + 250).toFixed(2)}</strong>
+      <strong>Rs {(total + 100).toFixed(2)}</strong>
     </div>
   </div>
 )}
