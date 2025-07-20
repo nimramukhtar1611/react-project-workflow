@@ -134,13 +134,13 @@ const handleSubmit = async (e) => {
     backgroundColor: "#f9f9f9",
     cursor: "pointer",
     border: "1px solid #ddd",
-  }} className="bg-light p-3 rounded mb-4">
+  }} className=" p-3 rounded mb-4 shadow-sm">
     {cartItems.map((item, index) => {
       const price = parseFloat(String(item.product.price).replace(/[^0-9.]/g, ""));
       const subtotal = price * item.quantity;
       return (
       <div key={index} className="border-bottom py-3">
-  <div className="d-flex align-items-center">
+  <div className="d-flex align-items-center ">
     {/* IMAGE */}
     <div>
       <div
