@@ -130,63 +130,72 @@ const handleSubmit = async (e) => {
 
 {/* Summary List */}
 {showSummary && (
-  <div className="bg-light p-3 rounded mb-4">
+  <div  style={{
+    backgroundColor: "#f9f9f9",
+    cursor: "pointer",
+    border: "1px solid #ddd",
+  }} className="bg-light p-3 rounded mb-4">
     {cartItems.map((item, index) => {
       const price = parseFloat(String(item.product.price).replace(/[^0-9.]/g, ""));
       const subtotal = price * item.quantity;
       return (
-        <div key={index} className="border-bottom py-3">
-          <div className="row align-items-center">
-            {/* IMAGE */}
-           <div className="col-4 col-sm-2">
-  <div
-    style={{
-      position: "relative",
-      width: "100px",
-      height: "75px",
-    }}
-  >
-    <img
-      src={item.product.images[0]}
-      alt={item.product.title}
-      className="img-fluid rounded"
-      style={{
-        objectFit: "cover",
-        width: "100%",
-        height: "100%",
-        borderRadius: "0.5rem",
-      }}
-    />
-   
-    <span
-      style={{
-        position: "absolute",
-        top: "-8px",
-        right: "-8px",
-        backgroundColor: "#E1AD01",
-        color: "#fff",
-        borderRadius: "50%",
-        width: "24px",
-        height: "24px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontSize: "0.75rem",
-        fontWeight: "bold",
-        boxShadow: "0 0 4px rgba(0,0,0,0.3)",
-      }}
-    >
-      {item.quantity}
-    </span>
-  </div></div>
+      <div key={index} className="border-bottom py-3">
+  <div className="d-flex align-items-center">
+    {/* IMAGE */}
+    <div>
+      <div
+        style={{
+          position: "relative",
+          width: "75px",
+          height: "60px",
+        }}
+      >
+        <img
+          src={item.product.images[0]}
+          alt={item.product.title}
+          className="img-fluid rounded"
+          style={{
+            objectFit: "cover",
+            width: "100%",
+            height: "100%",
+            borderRadius: "0.5rem",
+          }}
+        />
+        <span
+          style={{
+            position: "absolute",
+            top: "-8px",
+            right: "-8px",
+            backgroundColor: "#E1AD01",
+            color: "#fff",
+            borderRadius: "50%",
+            width: "22px",
+            height: "22px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "0.7rem",
+            fontWeight: "bold",
+            boxShadow: "0 0 4px rgba(0,0,0,0.3)",
+          }}
+        >
+          {item.quantity}
+        </span>
+      </div>
+    </div>
 
- <div className="d-flex justify-content-between align-items-center mt-3">
-  <strong>{item.product.title}</strong>
-  <strong>{item.product.price}</strong>
-</div>
-      
+    {/* TITLE + PRICE */}
+    <div
+      className="flex-grow-1 ms-2"
+      style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
+    >
+      <strong style={{ fontSize: "0.95rem" }}>{item.product.title}</strong>
+      <strong style={{ fontSize: "0.95rem" }}>{item.product.price}</strong>
+    </div>
   </div>
-        </div>
+</div>
+
+
       );
     })}
 
