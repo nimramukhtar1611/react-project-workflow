@@ -76,8 +76,10 @@ const CategoryPage = () => {
         }
       }
 
-      setCategory(found);
-
+setCategory(null);
+setTimeout(() => {
+  setCategory(found);
+}, 100);
       if (found && found._id) {
         const filtered = allProducts.filter(
           (prod) => prod.category?._id === found._id
@@ -131,6 +133,7 @@ const CategoryPage = () => {
       >
         {Array.isArray(category.images) && category.images.length > 0 ? (
           <Carousel
+            key={category._id}
             fade
             controls={false}
             indicators={false}
@@ -144,6 +147,7 @@ const CategoryPage = () => {
                   src={image}
                   alt={`Slide ${index}`}
                   className="d-block w-100"
+                   loading="lazy"
                   style={{
                     objectFit: "cover",
                     height: "100vh",
@@ -195,9 +199,9 @@ const CategoryPage = () => {
           {products.map((product) => (
             <div
               key={product._id}
-              className="col-12 col-sm-6 col-md-4 d-flex flex-column align-items-center mb-5"
+              className="col-12 col-sm-6 col-md-4 d-flex justify-content-center mb-4"
             >
-              <div className="card position-relative"
+              <div   className="card text-white position-relative"
               style={{
                 backgroundColor: "#f6f7fa",
                 width: "100%",
@@ -226,64 +230,75 @@ const CategoryPage = () => {
                 }}
               />
 
-              <div className="mt-3 text-center " style={{ maxWidth: "360px" }}>
-                <h5
-                  className="mb-2"
-                  style={{
-                    fontFamily: "'Playfair Display', serif",
-                    fontWeight: 700,
-                    fontSize: "1.25rem",
-                    color: "#333",
-                  }}
-                >
-                  {product.title}
-                </h5>
-                <p
-                  className="mb-2"
-                  style={{
-                    fontSize: "1rem",
-                    color: "#666",
-                    lineHeight: "1.5",
-                    padding: "0 10px",
-                  }}
-                >
-                  {product.desc}
-                </p>
-                <span
-                  style={{
-                    color: "#E1AD01",
-                    fontWeight: 600,
-                    fontSize: "1.1rem",
-                    letterSpacing: "0.5px",
-                  }}
-                >
-                  Rs {product.price}
-                </span>
-                <br />
-                <button
-                  className="btn btn-outline-warning px-3 py-1 mt-2 fw-semibold"
-                  style={{
-                    borderRadius: "30px",
-                    fontSize: "1rem",
-                    letterSpacing: "1px",
-                    transition: "all 0.3s ease",
-                    backgroundColor: "transparent",
-                    color: "#E1AD01",
-                    marginBottom:"10px"
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = "#E1AD01";
-                    e.target.style.color = "#fff";
-                    e.target.style.boxShadow = "0 4px 12px rgba(225, 173, 1, 0.5)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = "transparent";
-                    e.target.style.color = "#E1AD01";
-                    e.target.style.boxShadow = "none";
-                  }}
- onClick={() => setSelectedProduct(product)}                >
-                  Add To Cart
-                </button></div>
+              <div className="mt-3" style={{ maxWidth: "360px", padding: "0 1rem" }}>
+  {/* Title aligned left */}
+  <h5
+    className="mb-2 text-start"
+    style={{
+      fontFamily: "'Playfair Display', serif",
+      fontWeight: 700,
+      fontSize: "1.25rem",
+      color: "#333",
+    }}
+  >
+    {product.title}
+  </h5>
+
+  {/* Description */}
+  <p
+    className="mb-3 text-start"
+    style={{
+      fontSize: "1rem",
+      color: "#666",
+      lineHeight: "1.5",
+    }}
+  >
+    {product.desc}
+  </p>
+
+  {/* Price + Button */}
+  <div
+    className="d-flex justify-content-between align-items-center flex-wrap mt-3"
+    style={{ paddingBottom: "10px" }}
+  >
+    <span
+      style={{
+        color: "#E1AD01",
+        fontWeight: 600,
+        fontSize: "1rem",
+        marginLeft: "5px", 
+      }}
+    >
+      Rs {product.price}
+    </span>
+    <button
+      className="btn btn-outline-warning px-3 btn-sm rounded-pill mt-sm-0 py-1 fw-semibold"
+      style={{
+        borderRadius: "30px",
+        fontSize: "1rem",
+        letterSpacing: "1px",
+        backgroundColor: "transparent",
+        color: "#E1AD01",
+        marginRight: "5px", 
+        marginBottom: "10px",
+      }}
+      onMouseEnter={(e) => {
+        e.target.style.backgroundColor = "#E1AD01";
+        e.target.style.color = "#fff";
+        e.target.style.boxShadow = "0 4px 12px rgba(225, 173, 1, 0.5)";
+      }}
+      onMouseLeave={(e) => {
+        e.target.style.backgroundColor = "transparent";
+        e.target.style.color = "#E1AD01";
+        e.target.style.boxShadow = "none";
+      }}
+      onClick={() => setSelectedProduct(product)}
+    >
+      Add To Cart
+    </button>
+  </div>
+</div>
+
                 {selectedProduct && (
   <ProductDetail 
     product={selectedProduct} 

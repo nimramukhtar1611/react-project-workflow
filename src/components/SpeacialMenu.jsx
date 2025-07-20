@@ -21,7 +21,7 @@ const SpecialMenu = () => {
   if (!specialMenuCategory || specialMenuProducts.length === 0) return null;
 
   return (
-    <div className="container-fluid text-white pt-3 pb-5" style={{ backgroundColor: "#f6f7fa", fontFamily: "'Poppins', Arial, sans-serif" }}>
+    <div className="container-fluid text-white pt-1 pb-5" style={{ backgroundColor: "#f6f7fa", fontFamily: "'Poppins', Arial, sans-serif" }}>
       <div className="text-center mb-5">
         <h2 style={{ fontFamily: "'Playfair Display', serif", fontWeight: 900, color: "#E1AD01", fontSize: 45 }}>
           {specialMenuCategory.title}
@@ -52,7 +52,7 @@ const SpecialMenu = () => {
                 alt={product.title}
                 className="card-img-top"
                 style={{
-                  height: "250px",
+                  height: "280px",
                   objectFit: "cover",
                   borderTopLeftRadius: "15px",
                   borderTopRightRadius: "15px",
