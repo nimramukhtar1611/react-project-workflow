@@ -59,38 +59,55 @@ const CategoryPage = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-  useEffect(() => {
-    const init = async () => {
-      if (allCategories.length === 0) await fetchAllCategories();
-      if (allProducts.length === 0) await fetchAllProducts();
+useEffect(() => {
+  let isMounted = true; 
 
-      const found = allCategories.find(
-        (cat) => cat.title.toLowerCase() === title.toLowerCase()
-      );
+  const init = async () => {
+    if (isMounted) {
+      setCategory(null);
+      setProducts([]);
+      setSelectedProductImages(null);
+      setSelectedProduct(null);
+    }
 
-      if (found && (!Array.isArray(found.images) || found.images.length === 0)) {
-        if (Array.isArray(found.image)) {
-          found.images = found.image;
-        } else if (found.image) {
-          found.images = [found.image];
-        }
+    if (allCategories.length === 0) await fetchAllCategories();
+    if (allProducts.length === 0) await fetchAllProducts();
+
+    const found = allCategories.find(
+      (cat) => cat.title.toLowerCase() === title.toLowerCase()
+    );
+
+    if (found && (!Array.isArray(found.images) || found.images.length === 0)) {
+      if (Array.isArray(found.image)) {
+        found.images = found.image;
+      } else if (found.image) {
+        found.images = [found.image];
       }
+    }
 
-setCategory(null);
-setTimeout(() => {
-  setCategory(found);
-}, 100);
+    if (isMounted) {
+      setCategory(found);
       if (found && found._id) {
         const filtered = allProducts.filter(
           (prod) => prod.category?._id === found._id
         );
         setProducts(filtered);
       }
-    };
+    }
+  };
 
-    init();
-    window.scrollTo(0, 0);
-  }, [title, allCategories, allProducts]);
+  init();
+  window.scrollTo(0, 0);
+
+  return () => {
+    isMounted = false;
+    setCategory(null);
+    setProducts([]);
+    setSelectedProductImages(null);
+    setSelectedProduct(null);
+  };
+}, [title, allCategories, allProducts]);
+
 
   if (!category) {
     return (
@@ -147,7 +164,6 @@ setTimeout(() => {
                   src={image}
                   alt={`Slide ${index}`}
                   className="d-block w-100"
-                   loading="lazy"
                   style={{
                     objectFit: "cover",
                     height: "100vh",
